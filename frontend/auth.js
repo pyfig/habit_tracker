@@ -87,6 +87,18 @@ registerForm.addEventListener('submit', async (e) => {
         return;
     }
     
+    // Проверка формата имени пользователя
+    if (!/^[a-zA-Z0-9_-]{3,20}$/.test(username)) {
+        registerError.textContent = 'Имя пользователя должно содержать от 3 до 20 символов и может включать только буквы, цифры, дефис и подчеркивание';
+        return;
+    }
+    
+    // Проверка формата пароля
+    if (!/^[a-zA-Z0-9@#$%^&+=]{6,20}$/.test(password)) {
+        registerError.textContent = 'Пароль должен содержать от 6 до 20 символов и может включать буквы, цифры и специальные символы (@#$%^&+=)';
+        return;
+    }
+    
     try {
         registerError.textContent = '';
         await authApi.register(username, password);

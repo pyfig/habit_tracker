@@ -7,20 +7,25 @@ from app.db import get_db
 from app.models import Habit, User
 from app.schemas import HabitCreate, HabitRead, HabitUpdate
 from app.auth import get_current_user
+from sqlalchemy.exc import IntegrityError
 
 router = APIRouter(prefix="/habits", tags=["habits"])
 
 @router.post("/", response_model=HabitRead)
 async def create_habit(habit_data: HabitCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    new_habit = Habit(
-        user_id=current_user.id,
-        name=habit_data.name,
-        description=habit_data.description
-    )
-    db.add(new_habit)
-    db.commit()
-    db.refresh(new_habit)
-    return new_habit
+    try:
+        new_habit = Habit(
+            user_id=current_user.id,
+            name=habit_data.name,
+            description=habit_data.description
+        )
+        db.add(new_habit)
+        db.commit()
+        db.refresh(new_habit)
+        return new_habit
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="Habit already exists or other integrity error")
 
 @router.get("/", response_model=List[HabitRead])
 async def get_habits(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
