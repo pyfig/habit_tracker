@@ -18,7 +18,8 @@ function saveToken(token) {
 
 // Функция для получения токена из localStorage
 function getToken() {
-    return localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+    return token;
 }
 
 // Функция для удаления токена из localStorage

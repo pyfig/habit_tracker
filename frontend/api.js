@@ -22,6 +22,7 @@ async function apiRequest(endpoint, method = 'GET', data = null, token = null) {
     }
     
     try {
+        console.log('Request:', `${API_URL}${endpoint}`, config);
         const response = await fetch(`${API_URL}${endpoint}`, config);
         
         if (response.status === 204) {
@@ -29,6 +30,7 @@ async function apiRequest(endpoint, method = 'GET', data = null, token = null) {
         }
         
         const result = await response.json();
+        console.log('Response:', result);
         
         if (!response.ok) {
             throw new Error(result.detail || 'Произошла ошибка при выполнении запроса');
@@ -37,7 +39,7 @@ async function apiRequest(endpoint, method = 'GET', data = null, token = null) {
         return result;
     } catch (error) {
         console.error('API Error:', error);
-        throw error;
+        throw new Error(`API Error: ${error.message} (endpoint: ${endpoint})`);
     }
 }
 

@@ -126,6 +126,11 @@ habitForm.addEventListener('submit', async (e) => {
     const token = getToken();
     const habitId = habitIdInput.value;
     
+    if (!habitNameInput.value.trim()) {
+        alert('Пожалуйста, укажите название привычки');
+        return;
+    }
+
     try {
         if (habitId) {
             // Редактирование существующей привычки
@@ -144,6 +149,7 @@ habitForm.addEventListener('submit', async (e) => {
         closeModal();
     } catch (error) {
         console.error('Ошибка при сохранении привычки:', error);
+        alert(`Ошибка сохранения: ${error.message}`);
     }
 });
 
