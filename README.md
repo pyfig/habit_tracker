@@ -10,40 +10,14 @@
 
 ## Запуск проекта
 
-### Запуск бэкенда
-
-1. Перейдите в директорию бэкенда:
 ```
-cd backend
+git clone git@github.com:pyfig/habit_tracker.git
+cd habit_tracker/
+docker-compose up -d
 ```
-
-2. Установите зависимости:
-```
-pip install -r requirements.txt
-```
-
-3. Запустите сервер:
-```
-uvicorn app.main:app --reload
-```
-
 Бэкенд будет доступен по адресу: http://localhost:8000
-
-### Запуск фронтенда
-
-Для запуска фронтенда можно использовать любой простой HTTP-сервер. Например, с помощью Python:
-
-1. Перейдите в директорию фронтенда:
-```
-cd frontend
-```
-
-2. Запустите HTTP-сервер:
-```
-python -m http.server 8080
-```
-
-Фронтенд будет доступен по адресу: http://localhost:8080
+Фронтенд будет доступен по адресу: http://localhost:3000
+БД доступна по адресу: оступна по адресу: http://localhost:5432
 
 ## Функциональность
 
@@ -63,7 +37,7 @@ python -m http.server 8080
 - Просмотр календаря с отметками
 - Удаление отметок
 
-## Технологии
+## Cтек технологий
 
 ### Бэкенд
 - FastAPI
@@ -73,4 +47,4 @@ python -m http.server 8080
 ### Фронтенд
 - HTML5
 - CSS3
-- JavaScript (ES6+)
+- JavaScript
