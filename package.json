@@ -1,0 +1,13 @@
+{
+  "name": "habit_tracker",
+  "version": "1.0.0",
+  "description": "Habit Tracker Frontend",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vite": "^4.0.0"
+  }
+}

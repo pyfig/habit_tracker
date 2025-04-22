@@ -24,9 +24,10 @@ app.add_middleware(
 )
 
 # Подключаем маршруты
-app.include_router(auth.router)
-app.include_router(habits.router)
-app.include_router(marks.router)
+app.include_router(auth.router, prefix="/api")
+app.include_router(habits.router, prefix="/api")
+app.include_router(marks.router, prefix="/api")
+
 
 @app.get("/")
 async def root():

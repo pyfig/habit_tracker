@@ -1,5 +1,5 @@
 // API URL
-const API_URL = '/api';
+const API_URL = 'http://localhost:8000/api';
 
 // Функция для выполнения запросов к API
 async function apiRequest(endpoint, method = 'GET', data = null, token = null) {
