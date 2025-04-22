@@ -13,12 +13,10 @@ router = APIRouter(prefix="/marks", tags=["marks"])
 
 @router.post("/", response_model=MarkRead)
 async def create_mark(mark_data: MarkCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    # Проверяем, что привычка принадлежит текущему пользователю
     habit = db.query(Habit).filter(Habit.id == mark_data.habit_id, Habit.user_id == current_user.id).first()
     if not habit:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found or doesn't belong to current user")
     
-    # Проверяем, нет ли уже отметки на эту дату
     existing_mark = db.query(Mark).filter(Mark.habit_id == mark_data.habit_id, Mark.date == mark_data.date).first()
     if existing_mark:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Mark for this date already exists")
@@ -34,7 +32,6 @@ async def create_mark(mark_data: MarkCreate, current_user: User = Depends(get_cu
 
 @router.get("/habit/{habit_id}", response_model=List[MarkRead])
 async def get_marks_by_habit(habit_id: UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    # Проверяем, что привычка принадлежит текущему пользователю
     habit = db.query(Habit).filter(Habit.id == habit_id, Habit.user_id == current_user.id).first()
     if not habit:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found or doesn't belong to current user")
@@ -44,7 +41,6 @@ async def get_marks_by_habit(habit_id: UUID, current_user: User = Depends(get_cu
 
 @router.delete("/{mark_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_mark(mark_id: UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    # Находим отметку и проверяем, что она принадлежит привычке текущего пользователя
     mark = db.query(Mark).join(Habit).filter(
         Mark.id == mark_id,
         Habit.user_id == current_user.id
