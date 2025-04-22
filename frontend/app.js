@@ -1,4 +1,3 @@
-// Основной файл приложения
 
 // Глобальные переменные и инициализация
 let currentUser = null;
@@ -17,13 +16,8 @@ function initApp() {
 
 // Функция для инициализации обработчиков событий
 function initEventListeners() {
-    // Обработчики событий для аутентификации уже определены в auth.js
-    // Обработчики событий для привычек уже определены в habits.js
-    // Обработчики событий для календаря уже определены в calendar.js
     
-    // Дополнительные обработчики событий можно добавить здесь
     document.addEventListener('keydown', (e) => {
-        // Закрытие модальных окон при нажатии Escape
         if (e.key === 'Escape') {
             const modals = document.querySelectorAll('.modal');
             modals.forEach(modal => {
