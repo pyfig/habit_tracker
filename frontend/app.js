@@ -14,6 +14,12 @@ function initApp() {
     initEventListeners();
 }
 
+// Функция для загрузки данных пользователя
+function loadUserData() {
+    // Загружаем привычки пользователя
+    loadHabits();
+}
+
 // Функция для инициализации обработчиков событий
 function initEventListeners() {
     

@@ -113,20 +113,23 @@ function renderCalendar() {
         dayElement.className = 'calendar-day';
         dayElement.textContent = i;
         dayElement.setAttribute('data-date', dateStr);
-        
         // Отмечаем сегодняшний день
         if (dateStr === todayDate) {
             dayElement.classList.add('today');
         }
-        
         // Отмечаем дни с отметками
         if (hasMarkOnDate(date)) {
             dayElement.classList.add('marked');
         }
-        
-        // Добавляем обработчик клика для добавления/удаления отметки
-        dayElement.addEventListener('click', () => toggleMark(dateStr));
-        
+        // Блокируем будущее
+        if (date > today) {
+            dayElement.classList.add('disabled');
+            dayElement.style.pointerEvents = 'none';
+            dayElement.style.opacity = '0.5';
+        } else {
+            // Добавляем обработчик клика для добавления/удаления отметки
+            dayElement.addEventListener('click', () => toggleMark(dateStr));
+        }
         calendarElement.appendChild(dayElement);
     }
     

@@ -1,6 +1,6 @@
 // apiClient.js
 
-const API_URL = '/api';
+const API_URL = 'http://localhost:8000/api';
 
 class ApiClient {
   constructor(baseURL = API_URL) {
@@ -97,11 +97,26 @@ class ApiClient {
     return this.request(`/habits/${id}`, { method: 'GET' });
   }
 
+  // Обновленный метод createHabit с обработкой ошибок
   async createHabit(habit) {
-    return this.request('/habits', {
-      method: 'POST',
-      data: habit
-    });
+    try {
+      const data = await this.request('/habits', {
+        method: 'POST',
+        data: habit
+      });
+      console.log('Привычка успешно создана:', data);
+      return data;
+    } catch (error) {
+      console.error('Ошибка создания привычки:', error);
+      throw new Error('Не удалось сохранить привычку');
+    }
+  }
+  
+  // Добавлена синхронизация данных календаря
+  async syncCalendar(habitId) {
+    const marks = await this.getMarks(habitId);
+    // Логика обновления интерфейса календаря
+    return marks;
   }
 
   async updateHabit(id, habit) {
@@ -132,5 +147,21 @@ class ApiClient {
   }
 }
 
-// Экспорт единственного инстанса
-export const api = new ApiClient();
+// Создаем глобальный экземпляр API клиента
+const api = new ApiClient();
+
+// Делаем методы API доступными глобально
+const habitsApi = {
+  getAll: (token) => api.getHabits(),
+  getById: (id, token) => api.getHabitById(id),
+  create: (habitData, token) => api.createHabit(habitData),
+  update: (id, habitData, token) => api.updateHabit(id, habitData),
+  delete: (id, token) => api.deleteHabit(id)
+};
+
+// API для работы с отметками
+const marksApi = {
+  getByHabit: (habitId, token) => api.getMarks(habitId),
+  create: (markData, token) => api.createMark(markData),
+  delete: (id, token) => api.deleteMark(id)
+};

@@ -78,16 +78,16 @@ const habitsApi = {
 };
 
 // API для работы с отметками
+// Исправленные эндпоинты для отметок
 const marksApi = {
-    getByHabit: async (habitId, token) => {
-        return apiRequest(`/marks/habit/${habitId}`, 'GET', null, token);
-    },
-    
-    create: async (markData, token) => {
-        return apiRequest('/marks', 'POST', markData, token);
-    },
-    
-    delete: async (id, token) => {
-        return apiRequest(`/marks/${id}`, 'DELETE', null, token);
-    }
+  getByHabit: async (habitId, token) => {
+    return apiRequest(`/habits/${habitId}/marks`, 'GET', null, token);
+  },
+  
+  create: async (markData, token) => {
+    return apiRequest('/marks', 'POST', {
+      ...markData,
+      date: new Date().toISOString().split('T')[0]
+    }, token);
+  }
 };
