@@ -9,7 +9,6 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
 </head>
 <body>
-<<<<<<< HEAD
   <div class="app-container">
     <!-- Authentication -->
     <section id="auth-container" class="container" aria-label="Аутентификация">
@@ -60,109 +59,6 @@
         <div class="header-actions">
           <button id="profile-btn" class="btn secondary-btn" data-action="profile">Профиль</button>
           <button id="logout-btn" class="btn secondary-btn" data-action="logout">Выйти</button>
-=======
-    <div class="app-container">
-        <div id="auth-container" class="container">
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="login">Вход</button>
-                <button class="tab-btn" data-tab="register">Регистрация</button>
-            </div>
-            
-            <div id="login-form" class="auth-form active">
-                <h2>Вход в систему</h2>
-                <form id="login-form-element">
-                    <div class="form-group">
-                        <label for="login-username">Имя пользователя</label>
-                        <input type="text" id="login-username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password">Пароль</label>
-                        <input type="password" id="login-password" required>
-                    </div>
-                    <button type="submit" class="btn primary-btn">Войти</button>
-                </form>
-                <div id="login-error" class="error-message"></div>
-            </div>
-            
-            <div id="register-form" class="auth-form">
-                <h2>Регистрация</h2>
-                <form id="register-form-element">
-                    <div class="form-group">
-                        <label for="register-username">Имя пользователя</label>
-                        <input type="text" id="register-username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-password">Пароль</label>
-                        <input type="password" id="register-password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-password-confirm">Подтвердите пароль</label>
-                        <input type="password" id="register-password-confirm" required>
-                    </div>
-                    <button type="submit" class="btn primary-btn">Зарегистрироваться</button>
-                </form>
-                <div id="register-error" class="error-message"></div>
-            </div>
-        </div>
-        
-        <div id="app-content" class="container hidden">
-            <header>
-                <h1>Трекер привычек</h1>
-                <button id="logout-btn" class="btn secondary-btn">Выйти</button>
-            </header>
-            
-            <div class="content-wrapper">
-                <div class="habits-section">
-                    <div class="habits-header">
-                        <h2>Мои привычки</h2>
-                        <button id="add-habit-btn" class="btn primary-btn"><i class="fas fa-plus"></i> Добавить</button>
-                    </div>
-                    
-                    <div id="habits-list" class="habits-list">
-                        <!-- Здесь будут отображаться привычки -->
-                    </div>
-                </div>
-                
-                <div class="calendar-section">
-                    <h2>Календарь отметок</h2>
-                    <div class="calendar-controls">
-                        <button id="prev-month" class="btn icon-btn"><i class="fas fa-chevron-left"></i></button>
-                        <h3 id="current-month">Месяц Год</h3>
-                        <button id="next-month" class="btn icon-btn"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                    <div id="calendar" class="calendar">
-                        <!-- Здесь будет отображаться календарь -->
-                    </div>
-
-                    <!-- Добавленный блок списка выполненных привычек сегодня -->
-                    <h3>Выполненные привычки сегодня:</h3>
-                    <ul id="completed-today-list" class="completed-list"></ul>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Модальное окно для добавления/редактирования привычки -->
-        <div id="habit-modal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2 id="habit-modal-title">Добавить привычку</h2>
-                <form id="habit-form">
-                    <input type="hidden" id="habit-id">
-                    <div class="form-group">
-                        <label for="habit-name">Название</label>
-                        <input type="text" id="habit-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="habit-description">Описание</label>
-                        <textarea id="habit-description" rows="3"></textarea>
-                    </div>
-                    <div class="form-actions">
-                        <button type="button" id="cancel-habit" class="btn secondary-btn">Отмена</button>
-                        <button type="submit" class="btn primary-btn">Сохранить</button>
-                    </div>
-                </form>
-            </div>
->>>>>>> 1b17dc0 (Added archieved and completed habits, with new api endpoint in habits py, realationships in model.py)
         </div>
       </header>
 
