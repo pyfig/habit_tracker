@@ -145,6 +145,58 @@ function renderCalendar() {
         calendarElement.appendChild(dayElement);
     }
 }
+// файл: frontend/calendar.js
+
+// После загрузки отметок обновляем календарь и список выполненных сегодня
+async function loadAllMarks() {
+    try {
+        const token = getToken();
+        allMarks = {};
+        for (const habit of habits) {
+            const marks = await marksApi.getByHabit(habit.id, token);
+            allMarks[habit.id] = marks;
+        }
+        renderCalendar();
+        renderCompletedToday(); // Обновляем список выполненных сегодня
+    } catch (error) {
+        console.error('Ошибка при загрузке отметок:', error);
+    }
+}
+
+
+
+// Функция для отображения списка выполненных сегодня привычек
+function renderCompletedToday() {
+    const todayStr = formatDate(new Date());
+    const listEl = document.getElementById('completed-today-list');
+    listEl.innerHTML = '';
+
+    // Определяем привычки, у которых есть отметка на сегодняшнюю дату
+    const doneHabits = habits.filter(habit => {
+        const marks = allMarks[habit.id] || [];
+        return marks.some(mark => mark.date === todayStr);
+    });
+
+    if (doneHabits.length === 0) {
+        listEl.innerHTML = '<li>Нет выполненных привычек</li>';
+    } else {
+        doneHabits.forEach(habit => {
+            const li = document.createElement('li');
+            li.textContent = habit.name;
+            listEl.appendChild(li);
+        });
+    }
+}
+
+function toggleTodayMark() {
+    const today = formatDate(new Date()); // Сегодняшняя дата в формате строки
+    const todayElement = document.querySelector(`.calendar-day[data-date="${today}"]`);
+
+    if (todayElement) {
+        todayElement.classList.toggle('marked');
+    }
+}
+
 
 // Функция для переключения на предыдущий месяц
 function goToPrevMonth() {
@@ -168,65 +220,33 @@ function goToNextMonth() {
 
 // Функция для добавления или удаления отметки
 async function toggleMark(dateStr) {
-    // Если нет выбранной привычки, показываем сообщение
-    if (habits.length === 0) {
-        alert('Сначала создайте привычку');
+    if (habits.length !== 1) {
         return;
     }
-    
-    // Если есть только одна привычка, используем ее
-    // Иначе показываем диалог выбора привычки
-    let selectedHabitId;
-    
-    if (habits.length === 1) {
-        selectedHabitId = habits[0].id;
-    } else {
-        // Создаем список привычек для выбора
-        const habitOptions = habits.map(habit => 
-            `<option value="${habit.id}">${habit.name}</option>`
-        ).join('');
-        
-        const habitSelector = document.createElement('div');
-        habitSelector.innerHTML = `
-            <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1001;">
-                <div style="background: white; padding: 20px; border-radius: 8px; max-width: 400px;">
-                    <h3>Выберите привычку</h3>
-                    <select id="habit-selector" style="width: 100%; padding: 8px; margin: 10px 0;">
-                        ${habitOptions}
-                    </select>
-                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                        <button id="cancel-select" style="padding: 8px 15px;">Отмена</button>
-                        <button id="confirm-select" style="padding: 8px 15px; background: var(--primary-color); color: white; border: none; border-radius: 4px;">Выбрать</button>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(habitSelector);
-        
-        // Обработчики для кнопок
-        return new Promise((resolve) => {
-            document.getElementById('cancel-select').addEventListener('click', () => {
-                document.body.removeChild(habitSelector);
-                resolve(null);
-            });
-            
-            document.getElementById('confirm-select').addEventListener('click', () => {
-                const selectedId = document.getElementById('habit-selector').value;
-                document.body.removeChild(habitSelector);
-                resolve(selectedId);
-            });
-        }).then(async (habitId) => {
-            if (habitId) {
-                await processMarkToggle(habitId, dateStr);
-            }
-        });
-    }
-    
-    if (selectedHabitId) {
-        await processMarkToggle(selectedHabitId, dateStr);
+
+    const selectedHabitId = habits[0].id;
+    await processMarkToggle(selectedHabitId, dateStr);
+}
+
+// файл: frontend/calendar.js
+
+// После загрузки отметок обновляем календарь и список выполненных сегодня
+async function loadAllMarks() {
+    try {
+        const token = getToken();
+        allMarks = {};
+        for (const habit of habits) {
+            const marks = await marksApi.getByHabit(habit.id, token);
+            allMarks[habit.id] = marks;
+        }
+        renderCalendar();
+        renderCompletedToday(); // Обновляем список выполненных сегодня
+    } catch (error) {
+        console.error('Ошибка при загрузке отметок:', error);
     }
 }
+
+
 
 // Функция для обработки добавления/удаления отметки
 async function processMarkToggle(habitId, dateStr) {

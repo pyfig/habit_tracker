@@ -272,6 +272,28 @@ header {
     padding: 5px 0;
 }
 
+/* файл: frontend/styles.css */
+/* Список выполненных сегодня привычек */
+.completed-list {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-top: 10px;
+    color: var(--dark-color);
+}
+/* кнопка архивирования в списке выполненных сегодня */
+.completed-list .archive-today-btn {
+    margin-left: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: var(--danger-color);
+  }
+  .completed-list .archive-today-btn:hover {
+    text-decoration: underline;
+  }
+  
+
 /* Модальное окно */
 .modal {
     display: none;
@@ -313,6 +335,7 @@ header {
     gap: 10px;
     margin-top: 20px;
 }
+
 
 /* Утилиты */
 .hidden {

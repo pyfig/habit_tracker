@@ -54,40 +54,47 @@ const authApi = {
     }
 };
 
+
 // API для работы с привычками
 const habitsApi = {
     getAll: async (token) => {
         return apiRequest('/habits', 'GET', null, token);
     },
-    
     getById: async (id, token) => {
         return apiRequest(`/habits/${id}`, 'GET', null, token);
     },
-    
     create: async (habitData, token) => {
         return apiRequest('/habits', 'POST', habitData, token);
     },
-    
     update: async (id, habitData, token) => {
         return apiRequest(`/habits/${id}`, 'PUT', habitData, token);
     },
-    
     delete: async (id, token) => {
         return apiRequest(`/habits/${id}`, 'DELETE', null, token);
+    },
+    archive: async (id, token) => {
+        return apiRequest(`/habits/${id}/archive`, 'POST', null, token);
     }
 };
 
+
+
+
 // API для работы с отметками
-// Исправленные эндпоинты для отметок
 const marksApi = {
-  getByHabit: async (habitId, token) => {
-    return apiRequest(`/habits/${habitId}/marks`, 'GET', null, token);
-  },
+    // Получение всех отметок по привычке (сейчас путь /api/marks/habit/{habitId})
+    getByHabit: async (habitId, token) => {
+      return apiRequest(`/marks/habit/${habitId}`, 'GET', null, token);
+    },
   
-  create: async (markData, token) => {
-    return apiRequest('/marks', 'POST', {
-      ...markData,
-      date: new Date().toISOString().split('T')[0]
-    }, token);
-  }
-};
+    // Создание новой отметки (используем переданную дату date)
+    create: async (markData, token) => {
+      return apiRequest('/marks', 'POST', markData, token);
+    },
+  
+    // Удаление отметки по id
+    delete: async (id, token) => {
+      return apiRequest(`/marks/${id}`, 'DELETE', null, token);
+    }
+  };
+  
