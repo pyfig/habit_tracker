@@ -17,7 +17,9 @@ async def create_habit(habit_data: HabitCreate, current_user: User = Depends(get
         new_habit = Habit(
             user_id=current_user.id,
             name=habit_data.name,
-            description=habit_data.description
+            description=habit_data.description,
+            priority=habit_data.priority,
+            importance=habit_data.importance
         )
         db.add(new_habit)
         db.commit()
@@ -29,7 +31,11 @@ async def create_habit(habit_data: HabitCreate, current_user: User = Depends(get
 
 @router.get("/", response_model=List[HabitRead])
 async def get_habits(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    habits = db.query(Habit).filter(Habit.user_id == current_user.id).all()
+    # Возвращаем только привычки пользователя, которые не в архиве
+    habits = db.query(Habit).filter(
+        Habit.user_id == current_user.id,
+        Habit.is_archived == False
+    ).all()
     return habits
 
 @router.get("/{habit_id}", response_model=HabitRead)
@@ -61,18 +67,6 @@ async def delete_habit(habit_id: UUID, current_user: User = Depends(get_current_
     db.delete(habit)
     db.commit()
     return None
-
-
-
-@router.get("/", response_model=List[HabitRead])
-async def get_habits(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    # Возвращаем только привычки пользователя, которые не в архиве
-    habits = db.query(Habit).filter(
-        Habit.user_id == current_user.id,
-        Habit.is_archived == False
-    ).all()
-    return habits
-
 
 @router.post("/{habit_id}/archive", status_code=status.HTTP_204_NO_CONTENT)
 async def archive_habit(habit_id: UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):

@@ -34,6 +34,8 @@ class Token(BaseModel):
 class HabitBase(BaseModel):
     name: str
     description: Optional[str] = None
+    priority: Optional[int] = Field(3, ge=1, le=5)
+    importance: Optional[int] = Field(3, ge=1, le=5)
 
 class HabitCreate(HabitBase):
     pass
@@ -44,6 +46,8 @@ class HabitUpdate(HabitBase):
 class HabitRead(HabitBase):
     id: UUID
     user_id: UUID
+    is_archived: bool
+    created_date: date
 
     class Config:
         orm_mode = True
@@ -59,3 +63,9 @@ class MarkRead(BaseModel):
 
     class Config:
         orm_mode = True
+
+class Profile(BaseModel):
+    total_habits: int
+    completed_habits: int
+    green_days: int
+    archived_habits: int

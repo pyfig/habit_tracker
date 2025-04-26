@@ -336,6 +336,73 @@ header {
     margin-top: 20px;
 }
 
+/* Существующие стили... */
+
+.filters {
+    margin: 10px 0;
+}
+.filters label {
+    margin-right: 15px;
+}
+.state-slider-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 5px 0;
+}
+.state-slider-container input[type=range] {
+    flex-grow: 1;
+}
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #444;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.5s;
+    z-index: 1000;
+}
+.notification.show {
+    opacity: 1;
+}
+.notification.error {
+    background-color: #d9534f;
+}
+.notification.success {
+    background-color: #5cb85c;
+}
+/* Улучшенные стили календаря */
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-top: 10px;
+}
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.calendar-day:hover {
+    background-color: #f0f0f0;
+}
+.calendar-day.today {
+    border: 2px solid var(--primary-color);
+}
+.calendar-day.marked {
+    background-color: var(--success-color);
+    color: #fff;
+}
+.calendar-day.marked:hover {
+    opacity: 0.8;
+}
 
 /* Утилиты */
 .hidden {

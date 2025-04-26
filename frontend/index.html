@@ -1,122 +1,164 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Трекер привычек</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Трекер привычек</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
 </head>
 <body>
-    <div class="app-container">
-        <div id="auth-container" class="container">
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="login">Вход</button>
-                <button class="tab-btn" data-tab="register">Регистрация</button>
-            </div>
-            
-            <div id="login-form" class="auth-form active">
-                <h2>Вход в систему</h2>
-                <form id="login-form-element">
-                    <div class="form-group">
-                        <label for="login-username">Имя пользователя</label>
-                        <input type="text" id="login-username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password">Пароль</label>
-                        <input type="password" id="login-password" required>
-                    </div>
-                    <button type="submit" class="btn primary-btn">Войти</button>
-                </form>
-                <div id="login-error" class="error-message"></div>
-            </div>
-            
-            <div id="register-form" class="auth-form">
-                <h2>Регистрация</h2>
-                <form id="register-form-element">
-                    <div class="form-group">
-                        <label for="register-username">Имя пользователя</label>
-                        <input type="text" id="register-username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-password">Пароль</label>
-                        <input type="password" id="register-password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="register-password-confirm">Подтвердите пароль</label>
-                        <input type="password" id="register-password-confirm" required>
-                    </div>
-                    <button type="submit" class="btn primary-btn">Зарегистрироваться</button>
-                </form>
-                <div id="register-error" class="error-message"></div>
-            </div>
-        </div>
-        
-        <div id="app-content" class="container hidden">
-            <header>
-                <h1>Трекер привычек</h1>
-                <button id="logout-btn" class="btn secondary-btn">Выйти</button>
-            </header>
-            
-            <div class="content-wrapper">
-                <div class="habits-section">
-                    <div class="habits-header">
-                        <h2>Мои привычки</h2>
-                        <button id="add-habit-btn" class="btn primary-btn"><i class="fas fa-plus"></i> Добавить</button>
-                    </div>
-                    
-                    <div id="habits-list" class="habits-list">
-                        <!-- Здесь будут отображаться привычки -->
-                    </div>
-                </div>
-                
-                <div class="calendar-section">
-                    <h2>Календарь отметок</h2>
-                    <div class="calendar-controls">
-                        <button id="prev-month" class="btn icon-btn"><i class="fas fa-chevron-left"></i></button>
-                        <h3 id="current-month">Месяц Год</h3>
-                        <button id="next-month" class="btn icon-btn"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                    <div id="calendar" class="calendar">
-                        <!-- Здесь будет отображаться календарь -->
-                    </div>
+  <div class="app-container">
+    <!-- Authentication -->
+    <section id="auth-container" class="container" aria-label="Аутентификация">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="login">Вход</button>
+        <button class="tab-btn" data-tab="register">Регистрация</button>
+      </div>
+      <div id="login-form" class="auth-form active" role="form" aria-labelledby="login-title">
+        <h2 id="login-title">Вход</h2>
+        <form id="login-form-element">
+          <label>
+            Имя пользователя
+            <input type="text" id="login-username" required />
+          </label>
+          <label>
+            Пароль
+            <input type="password" id="login-password" required />
+          </label>
+          <button type="submit" class="btn primary-btn">Войти</button>
+        </form>
+        <div id="login-error" class="error-message" role="alert"></div>
+      </div>
+      <div id="register-form" class="auth-form" role="form" aria-labelledby="register-title">
+        <h2 id="register-title">Регистрация</h2>
+        <form id="register-form-element">
+          <label>
+            Имя пользователя
+            <input type="text" id="register-username" required />
+          </label>
+          <label>
+            Пароль
+            <input type="password" id="register-password" required />
+          </label>
+          <label>
+            Подтвердите пароль
+            <input type="password" id="register-password-confirm" required />
+          </label>
+          <button type="submit" class="btn primary-btn">Зарегистрироваться</button>
+        </form>
+        <div id="register-error" class="error-message" role="alert"></div>
+      </div>
+    </section>
 
-                    <!-- Добавленный блок списка выполненных привычек сегодня -->
-                    <h3>Выполненные привычки сегодня:</h3>
-                    <ul id="completed-today-list" class="completed-list"></ul>
-                </div>
-            </div>
+    <!-- Main App -->
+    <main id="app-content" class="container hidden" aria-label="Основное содержимое">
+      <header>
+        <h1>Трекер привычек</h1>
+        <div class="header-actions">
+          <button id="profile-btn" class="btn secondary-btn" data-action="profile">Профиль</button>
+          <button id="logout-btn" class="btn secondary-btn" data-action="logout">Выйти</button>
         </div>
-        
-        <!-- Модальное окно для добавления/редактирования привычки -->
-        <div id="habit-modal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2 id="habit-modal-title">Добавить привычку</h2>
-                <form id="habit-form">
-                    <input type="hidden" id="habit-id">
-                    <div class="form-group">
-                        <label for="habit-name">Название</label>
-                        <input type="text" id="habit-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="habit-description">Описание</label>
-                        <textarea id="habit-description" rows="3"></textarea>
-                    </div>
-                    <div class="form-actions">
-                        <button type="button" id="cancel-habit" class="btn secondary-btn">Отмена</button>
-                        <button type="submit" class="btn primary-btn">Сохранить</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+      </header>
+
+      <div class="content-wrapper">
+        <!-- Habits Section -->
+        <section class="habits-section" aria-labelledby="habits-title">
+          <div class="habits-header">
+            <h2 id="habits-title">Мои привычки</h2>
+            <button id="add-habit-btn" class="btn primary-btn" data-action="add-habit">
+              <i class="fas fa-plus"></i> Добавить
+            </button>
+          </div>
+          <div class="filters" aria-label="Фильтры">
+            <label>
+              Приоритет
+              <select id="priority-filter">
+                <option value="">Все</option>
+                <option value="1">1 (низкий)</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5 (высокий)</option>
+              </select>
+            </label>
+            <label>
+              Важность
+              <select id="importance-filter">
+                <option value="">Все</option>
+                <option value="1">1 (низкая)</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5 (высокая)</option>
+              </select>
+            </label>
+          </div>
+          <div id="habits-list" class="habits-list" role="list"></div>
+        </section>
+
+        <!-- Calendar Section -->
+        <section class="calendar-section" aria-labelledby="calendar-title">
+          <h2 id="calendar-title">Календарь отметок</h2>
+          <div class="calendar-controls">
+            <button id="prev-month" class="btn icon-btn" data-action="prev-month">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <h3 id="current-month">Месяц Год</h3>
+            <button id="next-month" class="btn icon-btn" data-action="next-month">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+          <div id="calendar" class="calendar" role="grid"></div>
+          <h3>Выполненные сегодня</h3>
+          <ul id="completed-today-list" class="completed-list" role="list"></ul>
+        </section>
+      </div>
+    </main>
+
+    <!-- Habit Modal -->
+    <div id="habit-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="habit-modal-title">
+      <div class="modal-content">
+        <button class="close" data-action="close-modal" aria-label="Закрыть">&times;</button>
+        <h2 id="habit-modal-title">Добавить привычку</h2>
+        <form id="habit-form">
+          <input type="hidden" id="habit-id" />
+          <label>
+            Название
+            <input type="text" id="habit-name" required />
+          </label>
+          <label>
+            Описание
+            <textarea id="habit-description" rows="3"></textarea>
+          </label>
+          <label>
+            Приоритет
+            <input type="range" id="habit-priority" min="1" max="5" value="3" />
+            <span id="habit-priority-value">3</span>
+          </label>
+          <label>
+            Важность
+            <input type="range" id="habit-importance" min="1" max="5" value="3" />
+            <span id="habit-importance-value">3</span>
+          </label>
+          <div class="form-actions">
+            <button type="button" id="cancel-habit" class="btn secondary-btn" data-action="cancel">Отмена</button>
+            <button type="submit" class="btn primary-btn">Сохранить</button>
+          </div>
+        </form>
+      </div>
     </div>
-    
-    <script src="api.js"></script>
-    <script src="auth.js"></script>
-    <script src="habits.js"></script>
-    <script src="habits-handlers.js"></script>
-    <script src="calendar.js"></script>
-    <script src="app.js"></script>
+  </div>
+
+  <!-- Notifications -->
+  <div id="notification-container" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="api.js" type="module"></script>
+  <script src="auth.js" type="module"></script>
+  <script src="habits-handlers.js" type="module"></script>
+  <script src="calendar.js" type="module"></script>
+  <script src="app.js" type="module"></script>
 </body>
 </html>
