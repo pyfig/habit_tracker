@@ -1,5 +1,39 @@
 // Управление привычками на фронтенде
 const habitsList = document.getElementById('habits-list');
+const addHabitBtn = document.getElementById('add-habit-btn');
+const habitForm = document.getElementById('habit-form');
+const habitModal = document.getElementById('habit-modal');
+const modalCloseBtn = habitModal.querySelector('.close');
+const cancelHabitBtn = document.getElementById('cancel-habit');
+
+let habits = [];
+
+// Открытие модального окна
+function openHabitModal(editingId = null) {
+  // Сброс формы
+  habitForm.reset();
+  delete habitForm.dataset.editing;
+  document.getElementById('habit-modal-title').textContent = editingId ? 'Редактировать привычку' : 'Добавить привычку';
+  if (editingId) habitForm.dataset.editing = editingId;
+  habitModal.style.display = 'block';
+}
+
+// Закрытие модального окна
+function closeHabitModal() {
+  habitModal.style.display = 'none';
+}
+
+// Загрузка привычек при инициализации
+async function loadHabits() {
+    try {
+        const token = getToken();
+        habits = await habitsApi.getAll(token);
+        renderHabits();
+        renderCompletedToday();
+    } catch (error) {
+        console.error('Ошибка при загрузке привычек:', error);
+    }
+}
 
 // Отображение списка привычек
 function renderHabits() {
@@ -32,9 +66,8 @@ function renderHabits() {
 
         habitsList.appendChild(habitElement);
 
-        // Назначаем события на кнопки
         habitElement.querySelector('.edit-habit')
-            .addEventListener('click', () => editHabit(habit.id));
+            .addEventListener('click', () => openHabitModal(habit.id));
         habitElement.querySelector('.delete-habit')
             .addEventListener('click', () => deleteHabit(habit.id));
         habitElement.querySelector('.archive-habit')
@@ -42,11 +75,66 @@ function renderHabits() {
     });
 }
 
-// Архивирование привычки
-async function archiveHabit(habitId) {
-    if (!confirm('Вы уверены, что хотите архивировать эту привычку?')) {
+// Добавление новой привычки
+async function addHabit() {
+    const name = document.getElementById('habit-name').value.trim();
+    const description = document.getElementById('habit-description').value.trim();
+    if (!name) {
+        alert('Название привычки не может быть пустым.');
         return;
     }
+    try {
+        const token = getToken();
+        const newHabit = await habitsApi.create({ name, description }, token);
+        habits.push(newHabit);
+        renderHabits();
+        closeHabitModal();
+    } catch (error) {
+        console.error('Ошибка при добавлении привычки:', error);
+        alert('Не удалось добавить привычку. Попробуйте еще раз.');
+    }
+}
+
+// Обновление привычки
+async function updateHabit(habitId) {
+    const name = document.getElementById('habit-name').value.trim();
+    const description = document.getElementById('habit-description').value.trim();
+    if (!name) {
+        alert('Название привычки не может быть пустым.');
+        return;
+    }
+    try {
+        const token = getToken();
+        const updated = await habitsApi.update(habitId, { name, description }, token);
+        const idx = habits.findIndex(h => h.id === habitId);
+        habits[idx] = updated;
+        renderHabits();
+        closeHabitModal();
+    } catch (error) {
+        console.error('Ошибка при обновлении привычки:', error);
+        alert('Не удалось обновить привычку. Попробуйте еще раз.');
+    }
+}
+
+// Обработчик сабмита формы (добавление/редактирование)
+habitForm.addEventListener('submit', event => {
+    event.preventDefault();
+    const editingId = habitForm.dataset.editing;
+    if (editingId) updateHabit(editingId);
+    else addHabit();
+});
+
+// Слушатели для открытия/закрытия модалки
+addHabitBtn.addEventListener('click', () => openHabitModal());
+modalCloseBtn.addEventListener('click', closeHabitModal);
+cancelHabitBtn.addEventListener('click', closeHabitModal);
+window.addEventListener('click', event => {
+  if (event.target === habitModal) closeHabitModal();
+});
+
+// Остальной код: archiveHabit, deleteHabit (без изменений)
+async function archiveHabit(habitId) {
+    if (!confirm('Вы уверены, что хотите архивировать эту привычку?')) return;
     try {
         const token = getToken();
         await habitsApi.archive(habitId, token);
@@ -59,7 +147,6 @@ async function archiveHabit(habitId) {
     }
 }
 
-// Удаление привычки
 async function deleteHabit(habitId) {
     if (!confirm('Удалить эту привычку?')) return;
     try {
@@ -74,12 +161,5 @@ async function deleteHabit(habitId) {
     }
 }
 
-// Редактирование привычки
-function editHabit(habitId) {
-    const habit = habits.find(h => h.id === habitId);
-    if (!habit) return;
-
-    document.getElementById('habit-name').value = habit.name;
-    document.getElementById('habit-description').value = habit.description || '';
-    document.getElementById('habit-form').dataset.editing = habitId;
-}
+// Инициализация
+loadHabits();
