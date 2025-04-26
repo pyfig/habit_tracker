@@ -90,6 +90,7 @@ const Calendar = {
         } else {
           cell.addEventListener('click', () => this.toggleMark(dateStr));
         }
+<<<<<<< HEAD
   
         // tooltip: habits created on this date
         cell.addEventListener('mouseover', () => {
@@ -137,6 +138,129 @@ const Calendar = {
     async archiveHabit(habitId, habitName) {
       if(!confirm(`Архивировать «${habitName}»?`)) return;
       try {
+=======
+        calendarElement.appendChild(dayElement);
+    }
+    
+    // Добавляем пустые ячейки для дней следующего месяца
+    const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+    const remainingCells = totalCells - (firstDay + daysInMonth);
+    
+    for (let i = 1; i <= remainingCells; i++) {
+        const nextMonthDate = new Date(currentYear, currentMonth + 1, i);
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day other-month';
+        dayElement.textContent = i;
+        calendarElement.appendChild(dayElement);
+    }
+}
+// файл: frontend/calendar.js
+
+// После загрузки отметок обновляем календарь и список выполненных сегодня
+async function loadAllMarks() {
+    try {
+        const token = getToken();
+        allMarks = {};
+        for (const habit of habits) {
+            const marks = await marksApi.getByHabit(habit.id, token);
+            allMarks[habit.id] = marks;
+        }
+        renderCalendar();
+        renderCompletedToday(); // Обновляем список выполненных сегодня
+    } catch (error) {
+        console.error('Ошибка при загрузке отметок:', error);
+    }
+}
+
+
+
+// Функция для отображения списка выполненных сегодня привычек
+function renderCompletedToday() {
+    const todayStr = formatDate(new Date());
+    const listEl = document.getElementById('completed-today-list');
+    listEl.innerHTML = '';
+
+    // Определяем привычки, у которых есть отметка на сегодняшнюю дату
+    const doneHabits = habits.filter(habit => {
+        const marks = allMarks[habit.id] || [];
+        return marks.some(mark => mark.date === todayStr);
+    });
+
+    if (doneHabits.length === 0) {
+        listEl.innerHTML = '<li>Нет выполненных привычек</li>';
+    } else {
+        doneHabits.forEach(habit => {
+            const li = document.createElement('li');
+            li.textContent = habit.name;
+            listEl.appendChild(li);
+        });
+    }
+}
+
+function toggleTodayMark() {
+    const today = formatDate(new Date()); // Сегодняшняя дата в формате строки
+    const todayElement = document.querySelector(`.calendar-day[data-date="${today}"]`);
+
+    if (todayElement) {
+        todayElement.classList.toggle('marked');
+    }
+}
+
+
+// Функция для переключения на предыдущий месяц
+function goToPrevMonth() {
+    currentMonth--;
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    }
+    renderCalendar();
+}
+
+// Функция для переключения на следующий месяц
+function goToNextMonth() {
+    currentMonth++;
+    if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+    renderCalendar();
+}
+
+// Функция для добавления или удаления отметки
+async function toggleMark(dateStr) {
+    if (habits.length !== 1) {
+        return;
+    }
+
+    const selectedHabitId = habits[0].id;
+    await processMarkToggle(selectedHabitId, dateStr);
+}
+
+// файл: frontend/calendar.js
+
+// После загрузки отметок обновляем календарь и список выполненных сегодня
+async function loadAllMarks() {
+    try {
+        const token = getToken();
+        allMarks = {};
+        for (const habit of habits) {
+            const marks = await marksApi.getByHabit(habit.id, token);
+            allMarks[habit.id] = marks;
+        }
+        renderCalendar();
+        renderCompletedToday(); // Обновляем список выполненных сегодня
+    } catch (error) {
+        console.error('Ошибка при загрузке отметок:', error);
+    }
+}
+
+
+
+// Функция для обработки добавления/удаления отметки
+async function processMarkToggle(habitId, dateStr) {
+    try {
+>>>>>>> 1b17dc0 (Added archieved and completed habits, with new api endpoint in habits py, realationships in model.py)
         const token = getToken();
         await habitsApi.archive(habitId, token);
         this.habits = this.habits.filter(h=>h.id!==habitId);
