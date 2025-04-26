@@ -67,6 +67,7 @@ async def delete_habit(habit_id: UUID, current_user: User = Depends(get_current_
     db.delete(habit)
     db.commit()
     return None
+<<<<<<< HEAD
 
 @router.post("/{habit_id}/archive", status_code=status.HTTP_204_NO_CONTENT)
 async def archive_habit(habit_id: UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
@@ -79,3 +80,5 @@ async def archive_habit(habit_id: UUID, current_user: User = Depends(get_current
     habit.is_archived = True
     db.commit()
     return None
+=======
+>>>>>>> parent of b4e6209 (updated backend api)
