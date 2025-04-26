@@ -28,37 +28,13 @@ const api = {
       return null;
     }
 
-<<<<<<< HEAD
     let payload;
     try {
       payload = await res.json();
     } catch {
       throw new Error('Некорректный ответ сервера.');
-=======
-
-// API для работы с привычками
-const habitsApi = {
-    getAll: async (token) => {
-        return apiRequest('/habits', 'GET', null, token);
-    },
-    getById: async (id, token) => {
-        return apiRequest(`/habits/${id}`, 'GET', null, token);
-    },
-    create: async (habitData, token) => {
-        return apiRequest('/habits', 'POST', habitData, token);
-    },
-    update: async (id, habitData, token) => {
-        return apiRequest(`/habits/${id}`, 'PUT', habitData, token);
-    },
-    delete: async (id, token) => {
-        return apiRequest(`/habits/${id}`, 'DELETE', null, token);
-    },
-    archive: async (id, token) => {
-        return apiRequest(`/habits/${id}/archive`, 'POST', null, token);
->>>>>>> 1b17dc0 (Added archieved and completed habits, with new api endpoint in habits py, realationships in model.py)
     }
 
-<<<<<<< HEAD
     if (!res.ok) {
       // ожидаем { message: "..." } от сервера
       const msg = payload.message || payload.detail || 'Неизвестная ошибка сервера.';
@@ -102,26 +78,3 @@ export const marksApi = {
   create: data => api.post('/marks', data),
   remove: id => api.remove(`/marks/${id}`),
 };
-=======
-
-
-
-// API для работы с отметками
-const marksApi = {
-    // Получение всех отметок по привычке (сейчас путь /api/marks/habit/{habitId})
-    getByHabit: async (habitId, token) => {
-      return apiRequest(`/marks/habit/${habitId}`, 'GET', null, token);
-    },
-  
-    // Создание новой отметки (используем переданную дату date)
-    create: async (markData, token) => {
-      return apiRequest('/marks', 'POST', markData, token);
-    },
-  
-    // Удаление отметки по id
-    delete: async (id, token) => {
-      return apiRequest(`/marks/${id}`, 'DELETE', null, token);
-    }
-  };
-  
->>>>>>> 1b17dc0 (Added archieved and completed habits, with new api endpoint in habits py, realationships in model.py)

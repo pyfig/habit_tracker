@@ -336,7 +336,6 @@ header {
     margin-top: 20px;
 }
 
-<<<<<<< HEAD
 /* Существующие стили... */
 
 .filters {
@@ -404,8 +403,6 @@ header {
 .calendar-day.marked:hover {
     opacity: 0.8;
 }
-=======
->>>>>>> 1b17dc0 (Added archieved and completed habits, with new api endpoint in habits py, realationships in model.py)
 
 /* Утилиты */
 .hidden {
