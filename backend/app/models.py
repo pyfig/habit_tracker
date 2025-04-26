@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Text, ForeignKey, Date
+from sqlalchemy import Column, String, Text, ForeignKey, Date, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -22,6 +22,17 @@ class Habit(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     name = Column(String, nullable=False)
     description = Column(Text, nullable=True)
+    is_archived = Column(Boolean, default=False, nullable=False)  # Новое поле
+
+    user = relationship("User", back_populates="habits")
+    marks = relationship("Mark", back_populates="habit", cascade="all, delete-orphan")
+
+    __tablename__ = "habits"
+    
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    name = Column(String, nullable=False)
+    description = Column(Text, nullable=True)
     
     user = relationship("User", back_populates="habits")
     marks = relationship("Mark", back_populates="habit", cascade="all, delete-orphan")
@@ -34,3 +45,5 @@ class Mark(Base):
     date = Column(Date, nullable=False)
     
     habit = relationship("Habit", back_populates="marks")
+    
+    
