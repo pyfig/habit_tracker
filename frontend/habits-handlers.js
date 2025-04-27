@@ -24,10 +24,13 @@ function closeHabitModal() {
 }
 
 // Загрузка привычек при инициализации
+
 async function loadHabits() {
     try {
         const token = getToken();
         habits = await habitsApi.getAll(token);
+        // Фильтруем архивные привычки: показываем только active
+        habits = habits.filter(habit => !habit.archived);
         renderHabits();
         renderCompletedToday();
     } catch (error) {
@@ -38,14 +41,12 @@ async function loadHabits() {
 // Отображение списка привычек
 function renderHabits() {
     habitsList.innerHTML = '';
-    const activeHabits = habits.filter(habit => !habit.archived);  // Только активные привычки
-
-    if (activeHabits.length === 0) {
+    if (habits.length === 0) {
         habitsList.innerHTML = '<div class="empty-state">У вас пока нет привычек.</div>';
         return;
     }
 
-    activeHabits.forEach(habit => {
+    habits.forEach(habit => {
         const habitElement = document.createElement('div');
         habitElement.className = 'habit-item';
         habitElement.innerHTML = `
@@ -76,6 +77,63 @@ function renderHabits() {
             .addEventListener('click', () => archiveHabit(habit.id));
     });
 }
+
+async function loadHabits() {
+    try {
+        const token = getToken();
+        habits = await habitsApi.getAll(token);
+        // Фильтруем архивные привычки: показываем только active
+        habits = habits.filter(habit => !habit.archived);
+        renderHabits();
+        renderCompletedToday();
+    } catch (error) {
+        console.error('Ошибка при загрузке привычек:', error);
+    }
+}
+
+// Отображение списка привычек
+function renderHabits() {
+    habitsList.innerHTML = '';
+    if (habits.length === 0) {
+        habitsList.innerHTML = '<div class="empty-state">У вас пока нет привычек.</div>';
+        return;
+    }
+
+    habits.forEach(habit => {
+        const habitElement = document.createElement('div');
+        habitElement.className = 'habit-item';
+        habitElement.innerHTML = `
+            <div class="habit-info">
+                <h3>${habit.name}</h3>
+                <p>${habit.description || ''}</p>
+            </div>
+            <div class="habit-actions">
+                <button class="btn icon-btn edit-habit" data-id="${habit.id}">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn icon-btn delete-habit" data-id="${habit.id}">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <button class="btn icon-btn archive-habit" data-id="${habit.id}">
+                    <i class="fas fa-archive"></i>
+                </button>
+            </div>
+        `;
+
+        habitsList.appendChild(habitElement);
+
+        habitElement.querySelector('.edit-habit')
+            .addEventListener('click', () => openHabitModal(habit.id));
+        habitElement.querySelector('.delete-habit')
+            .addEventListener('click', () => deleteHabit(habit.id));
+        habitElement.querySelector('.archive-habit')
+            .addEventListener('click', () => archiveHabit(habit.id));
+    });
+}
+
+// Остальной код без изменений ниже
+
+
 
 
 // Добавление новой привычки

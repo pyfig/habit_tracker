@@ -29,7 +29,12 @@ async def create_habit(habit_data: HabitCreate, current_user: User = Depends(get
 
 @router.get("/", response_model=List[HabitRead])
 async def get_habits(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    habits = db.query(Habit).filter(Habit.user_id == current_user.id).all()
+    # Возвращаем только активные (неархивные) привычки
+    habits = (
+        db.query(Habit)
+          .filter(Habit.user_id == current_user.id, Habit.archived == False)
+          .all()
+    )
     return habits
 
 @router.get("/{habit_id}", response_model=HabitRead)
