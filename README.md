@@ -1,5 +1,3 @@
-# README.md (English)
-
 # Habit Tracker
 
 Simple and intuitive app to form and maintain daily habits. Create, edit, track progress in the calendar, and see completed habits for today.
