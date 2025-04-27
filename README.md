@@ -1,41 +1,37 @@
+# README.md (English)
+
 # Habit Tracker
 
-A simple application to help you build and maintain daily habits. Create, edit, and check off habits; view your progress in a calendar.
+Simple and intuitive app to form and maintain daily habits. Create, edit, track progress in the calendar, and see completed habits for today.
 
 ## Features
 
 ### Authentication
-- **Register**: Create a new account with a username and password  
-- **Login**: Sign in with your credentials  
-- **Logout**: Securely end your session  
+- **Register**: create a new account with username and password
+- **Login**: access your personal habit tracker
+- **Logout**: securely end your session
 
 ### Habit Management
-- **Create**: Add new habits with a title and description  
-- **Read**: View a list of all your habits  
-- **Update**: Edit the title or description of existing habits  
-- **Delete**: Remove habits you no longer wish to track  
+- **Create**: add a new habit with name and optional description
+- **Edit**: update habit details
+- **Delete**: remove unnecessary habits
+- **Archive**: move inactive habits to archive
 
 ### Progress Tracking
-- **Mark Complete**: Check off a habit on a given date  
-- **Calendar View**: See your streaks and history in a calendar layout  
-- **Undo Marks**: Remove mistaken completion marks  
+- **Mark Completion**: mark a habit as completed on a selected day
+- **Calendar View**: visualize your streaks and history
+- **Today's Completed Habits**: see a list of today's successes
+- **Remove Mark**: undo wrong marks
 
-## Getting Started
+## Quick Start
 
-### Prerequisites
+### Requirements
 
-- Docker & Docker Compose installed  
-- Git  
+- Docker  
+- Git
 
 ### Installation
 
-```bash
-git clone git@github.com:pyfig/habit_tracker.git
-cd habit_tracker
-docker-compose build
-docker-compose up -d
-```
-or
 ```bash
 git clone git@github.com:pyfig/habit_tracker.git
 cd habit_tracker
@@ -44,90 +40,50 @@ cd habit_tracker
 
 - **Backend**: http://localhost:8000  
 - **Frontend**: http://localhost:3000  
-- **Database (PostgreSQL)**: port 5432  
+- **Database**: port 5432
+
 
 ## Project Structure
 
 ```
 📦 habit_tracker
-├─ .gitignore
-├─ LICENSE
-├─ README.md
-├─ backend
-│  ├─ Dockerfile
-│  ├─ app
-│  │  ├─ auth.py
-│  │  ├─ db.py
-│  │  ├─ main.py
-│  │  ├─ models.py
-│  │  ├─ routes
-│  │  │  ├─ auth.py
-│  │  │  ├─ habits.py
-│  │  │  └─ marks.py
-│  │  └─ schemas.py
-│  └─ requirements.txt
-├─ docker-compose.yml
-├─ frontend
-│  ├─ Dockerfile
-│  ├─ api.js
-│  ├─ app.js
-│  ├─ auth.js
-│  ├─ calendar.js
-│  ├─ habits-handlers.js
-│  ├─ habits.js
-│  ├─ index.html
-│  ├─ nginx.conf
-│  └─ styles.css
-└─ package.json
+├─ backend/
+├─ frontend/
+├─ docker-compose.yml
+├─ main.sh
+├─ package.json
+└─ README.md
 ```
 
-## API Reference
+## API Overview
 
-### Authentication
+| Method | Endpoint                     | Description                 |
+|--------|------------------------------|-----------------------------|
+| POST   | `/api/auth/register`         | Register new user           |
+| POST   | `/api/auth/login`            | Login user                  |
+| GET    | `/api/habits`                | Get all habits              |
+| POST   | `/api/habits`                | Create a new habit          |
+| GET    | `/api/habits/{habit_id}`     | Get habit details           |
+| PUT    | `/api/habits/{habit_id}`     | Update habit                |
+| DELETE | `/api/habits/{habit_id}`     | Delete habit                |
+| POST   | `/api/marks`                 | Create a mark (track habit) |
+| GET    | `/api/marks/habit/{habit_id}`| Get all marks for habit     |
+| DELETE | `/api/marks/{mark_id}`       | Delete a mark               |
 
-| Method | Endpoint               | Description            | Body                                |
-| ------ | ---------------------- | ---------------------- | ----------------------------------- |
-| POST   | `/api/auth/register`   | Register new user      | `{ "username": "...", "password": "..." }` |
-| POST   | `/api/auth/login`      | Obtain JWT token       | `{ "username": "...", "password": "..." }` |
-
-### Habits
-
-| Method | Endpoint                  | Description              | Body                                   |
-| ------ | ------------------------- | ------------------------ | -------------------------------------- |
-| GET    | `/api/habits`             | List all habits          | —                                      |
-| POST   | `/api/habits`             | Create a new habit       | `{ "title": "...", "description": "..." }` |
-| GET    | `/api/habits/{habit_id}`  | Get habit details        | —                                      |
-| PUT    | `/api/habits/{habit_id}`  | Update a habit           | `{ "title": "...", "description": "..." }` |
-| DELETE | `/api/habits/{habit_id}`  | Delete a habit           | —                                      |
-
-### Marks
-
-| Method | Endpoint                       | Description                 | Body                         |
-| ------ | ------------------------------ | --------------------------- | ---------------------------- |
-| POST   | `/api/marks`                   | Create a completion mark    | `{ "habit_id": ..., "date": "YYYY-MM-DD" }` |
-| GET    | `/api/marks/habit/{habit_id}`  | List marks for a habit      | —                            |
-| DELETE | `/api/marks/{mark_id}`         | Remove a completion mark    | —                            |
-
-## Tech Stack
+## Technologies
 
 **Backend**  
-- FastAPI (REST API)  
-- Uvicorn (ASGI server)  
-- Nginx (reverse proxy & static files)  
-- PostgreSQL (database)  
-- SQLAlchemy (ORM)  
-- JWT (authentication)  
-- Docker  
+- FastAPI, Uvicorn, SQLAlchemy, PostgreSQL, Docker
 
 **Frontend**  
-- HTML5  
-- CSS3  
-- JavaScript + AJAX  
-- Font Awesome (icons)  
+- HTML5, CSS3, JavaScript, AJAX, FontAwesome, Vite
 
-## Future Roadmap
+## Roadmap
 
-- Add automated tests  
-- Set up CI/CD pipeline  
-- UI/UX improvements  
-- Analytics & statistics dashboard (e.g. Grafana, Zabbix)  
+- Automatic tests
+- Habit archive browsing
+- Habit recovery from archive
+- Mobile optimization
+- Analytics and statistics
+
+---
