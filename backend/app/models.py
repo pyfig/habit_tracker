@@ -22,9 +22,9 @@ class Habit(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     name = Column(String, nullable=False)
     description = Column(Text, nullable=True)
-    archived = Column(Boolean, default=False)  # новое поле для архивации
+    archived = Column(Boolean, default=False)
+    completed = Column(Boolean, default=False)  # Новое поле для выполнения
 
-    
     user = relationship("User", back_populates="habits")
     marks = relationship("Mark", back_populates="habit", cascade="all, delete-orphan")
 

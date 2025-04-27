@@ -74,7 +74,10 @@ const habitsApi = {
     },
     archive: async (id, token) => {
         return apiRequest(`/habits/${id}/archive`, 'POST', null, token);
-    }
+    },
+    complete: async (id, token) => {
+        return apiRequest(`/habits/${id}/complete`, 'POST', null, token);
+    }    
 };
 
 

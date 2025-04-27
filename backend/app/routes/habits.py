@@ -78,3 +78,17 @@ async def archive_habit(habit_id: UUID, current_user: User = Depends(get_current
     db.commit()
     db.refresh(habit)
     return None
+
+@router.post("/{habit_id}/complete", status_code=status.HTTP_204_NO_CONTENT)
+async def complete_habit(
+    habit_id: UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)
+):
+    habit = db.query(Habit).filter(Habit.id == habit_id, Habit.user_id == current_user.id).first()
+    if not habit:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found or doesn't belong to current user")
+    
+    # Помечаем привычку как выполненную
+    habit.completed = True  
+    db.commit()
+    db.refresh(habit)
+    return None

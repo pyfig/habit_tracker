@@ -41,12 +41,16 @@ async function loadHabits() {
 // Отображение списка привычек
 function renderHabits() {
     habitsList.innerHTML = '';
-    if (habits.length === 0) {
-        habitsList.innerHTML = '<div class="empty-state">У вас пока нет привычек.</div>';
+
+    // Отбираем привычки, которые НЕ архивированы и НЕ выполнены
+    const activeHabits = habits.filter(habit => !habit.archived && !habit.completed);
+
+    if (activeHabits.length === 0) {
+        habitsList.innerHTML = '<div class="empty-state">У вас пока нет активных привычек.</div>';
         return;
     }
 
-    habits.forEach(habit => {
+    activeHabits.forEach(habit => {
         const habitElement = document.createElement('div');
         habitElement.className = 'habit-item';
         habitElement.innerHTML = `
@@ -55,34 +59,28 @@ function renderHabits() {
                 <p>${habit.description || ''}</p>
             </div>
             <div class="habit-actions">
-                <button class="btn icon-btn edit-habit" data-id="${habit.id}">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="btn icon-btn delete-habit" data-id="${habit.id}">
-                    <i class="fas fa-trash"></i>
-                </button>
-                <button class="btn icon-btn archive-habit" data-id="${habit.id}">
-                    <i class="fas fa-archive"></i>
-                </button>
+                <button class="btn icon-btn edit-habit" data-id="${habit.id}"><i class="fas fa-edit"></i></button>
+                <button class="btn icon-btn archive-habit" data-id="${habit.id}"><i class="fas fa-archive"></i></button>
+                <button class="btn icon-btn delete-habit" data-id="${habit.id}"><i class="fas fa-trash"></i></button>
+                <button class="btn icon-btn complete-habit" data-id="${habit.id}"><i class="fa-solid fa-circle-check"></i></button>
             </div>
         `;
 
         habitsList.appendChild(habitElement);
 
-        habitElement.querySelector('.edit-habit')
-            .addEventListener('click', () => openHabitModal(habit.id));
-        habitElement.querySelector('.delete-habit')
-            .addEventListener('click', () => deleteHabit(habit.id));
-        habitElement.querySelector('.archive-habit')
-            .addEventListener('click', () => archiveHabit(habit.id));
+        habitElement.querySelector('.complete-habit').addEventListener('click', () => completeHabit(habit.id));
+        habitElement.querySelector('.edit-habit').addEventListener('click', () => openHabitModal(habit.id));
+        habitElement.querySelector('.delete-habit').addEventListener('click', () => deleteHabit(habit.id));
+        habitElement.querySelector('.archive-habit').addEventListener('click', () => archiveHabit(habit.id));
     });
 }
+
+
 
 async function loadHabits() {
     try {
         const token = getToken();
         habits = await habitsApi.getAll(token);
-        // Фильтруем архивные привычки: показываем только active
         habits = habits.filter(habit => !habit.archived);
         renderHabits();
         renderCompletedToday();
@@ -91,47 +89,6 @@ async function loadHabits() {
     }
 }
 
-// Отображение списка привычек
-function renderHabits() {
-    habitsList.innerHTML = '';
-    if (habits.length === 0) {
-        habitsList.innerHTML = '<div class="empty-state">У вас пока нет привычек.</div>';
-        return;
-    }
-
-    habits.forEach(habit => {
-        const habitElement = document.createElement('div');
-        habitElement.className = 'habit-item';
-        habitElement.innerHTML = `
-            <div class="habit-info">
-                <h3>${habit.name}</h3>
-                <p>${habit.description || ''}</p>
-            </div>
-            <div class="habit-actions">
-                <button class="btn icon-btn edit-habit" data-id="${habit.id}">
-                    <i class="fas fa-edit"></i>
-                </button>
-                <button class="btn icon-btn delete-habit" data-id="${habit.id}">
-                    <i class="fas fa-trash"></i>
-                </button>
-                <button class="btn icon-btn archive-habit" data-id="${habit.id}">
-                    <i class="fas fa-archive"></i>
-                </button>
-            </div>
-        `;
-
-        habitsList.appendChild(habitElement);
-
-        habitElement.querySelector('.edit-habit')
-            .addEventListener('click', () => openHabitModal(habit.id));
-        habitElement.querySelector('.delete-habit')
-            .addEventListener('click', () => deleteHabit(habit.id));
-        habitElement.querySelector('.archive-habit')
-            .addEventListener('click', () => archiveHabit(habit.id));
-    });
-}
-
-// Остальной код без изменений ниже
 
 
 
@@ -205,6 +162,27 @@ async function archiveHabit(habitId) {
     }
 }
 
+async function completeHabit(habitId) {
+    console.log('Complete clicked', habitId);
+    try {
+        const token = getToken();
+        await habitsApi.complete(habitId, token); // <-- теперь точно корректный запрос
+        console.log('Complete API request done');
+        
+        const completedHabit = habits.find(h => h.id === habitId);
+        if (completedHabit) {
+            completedHabit.completed = true;
+        }
+        renderHabits();
+        renderCompletedToday();
+    } catch (error) {
+        console.error('Ошибка при выполнении привычки:', error);
+        alert('Не удалось отметить привычку как выполненную.');
+    }
+}
+
+
+
 async function deleteHabit(habitId) {
     if (!confirm('Удалить эту привычку?')) return;
     try {
@@ -219,5 +197,31 @@ async function deleteHabit(habitId) {
     }
 }
 
+
+
+async function completeHabit(habitId) {
+    console.log('Complete clicked', habitId);
+    try {
+        const token = getToken();
+        await habitsApi.complete(habitId, token);
+        console.log('Complete API request done');
+
+        const completedHabit = habits.find(h => h.id === habitId);
+        if (completedHabit) {
+            completedHabit.completed = true;  // ← ставим галочку
+        }
+
+        renderHabits();          // обновляем активные привычки
+        renderCompletedToday();  // обновляем выполненные привычки
+    } catch (error) {
+        console.error('Ошибка при выполнении привычки:', error);
+        alert('Не удалось отметить привычку как выполненную.');
+    }
+}
+
+
+
+
 // Инициализация
 loadHabits();
+

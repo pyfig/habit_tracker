@@ -83,7 +83,11 @@ class ApiClient {
     if (data.token) this.token = data.token;
     return data;
   }
-
+  async completeHabit(id) {
+    return this.request(`/habits/${id}/complete`, {
+      method: 'POST'
+    });
+  }  
   async logout() {
     this.token = null;
   }
@@ -156,7 +160,8 @@ const habitsApi = {
   getById: (id, token) => api.getHabitById(id),
   create: (habitData, token) => api.createHabit(habitData),
   update: (id, habitData, token) => api.updateHabit(id, habitData),
-  delete: (id, token) => api.deleteHabit(id)
+  delete: (id, token) => api.deleteHabit(id),
+  complete: (id, token) => api.completeHabit(id)  // ← вот это добавляем!
 };
 
 // API для работы с отметками
