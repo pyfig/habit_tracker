@@ -162,27 +162,6 @@ async function archiveHabit(habitId) {
     }
 }
 
-async function completeHabit(habitId) {
-    console.log('Complete clicked', habitId);
-    try {
-        const token = getToken();
-        await habitsApi.complete(habitId, token); // <-- теперь точно корректный запрос
-        console.log('Complete API request done');
-        
-        const completedHabit = habits.find(h => h.id === habitId);
-        if (completedHabit) {
-            completedHabit.completed = true;
-        }
-        renderHabits();
-        renderCompletedToday();
-    } catch (error) {
-        console.error('Ошибка при выполнении привычки:', error);
-        alert('Не удалось отметить привычку как выполненную.');
-    }
-}
-
-
-
 async function deleteHabit(habitId) {
     if (!confirm('Удалить эту привычку?')) return;
     try {
