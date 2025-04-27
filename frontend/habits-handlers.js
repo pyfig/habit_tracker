@@ -38,12 +38,14 @@ async function loadHabits() {
 // Отображение списка привычек
 function renderHabits() {
     habitsList.innerHTML = '';
-    if (habits.length === 0) {
+    const activeHabits = habits.filter(habit => !habit.archived);  // Только активные привычки
+
+    if (activeHabits.length === 0) {
         habitsList.innerHTML = '<div class="empty-state">У вас пока нет привычек.</div>';
         return;
     }
 
-    habits.forEach(habit => {
+    activeHabits.forEach(habit => {
         const habitElement = document.createElement('div');
         habitElement.className = 'habit-item';
         habitElement.innerHTML = `
@@ -74,6 +76,7 @@ function renderHabits() {
             .addEventListener('click', () => archiveHabit(habit.id));
     });
 }
+
 
 // Добавление новой привычки
 async function addHabit() {
@@ -116,7 +119,6 @@ async function updateHabit(habitId) {
     }
 }
 
-// Обработчик сабмита формы (добавление/редактирование)
 habitForm.addEventListener('submit', event => {
     event.preventDefault();
     const editingId = habitForm.dataset.editing;
@@ -124,7 +126,6 @@ habitForm.addEventListener('submit', event => {
     else addHabit();
 });
 
-// Слушатели для открытия/закрытия модалки
 addHabitBtn.addEventListener('click', () => openHabitModal());
 modalCloseBtn.addEventListener('click', closeHabitModal);
 cancelHabitBtn.addEventListener('click', closeHabitModal);
@@ -132,7 +133,6 @@ window.addEventListener('click', event => {
   if (event.target === habitModal) closeHabitModal();
 });
 
-// Остальной код: archiveHabit, deleteHabit (без изменений)
 async function archiveHabit(habitId) {
     if (!confirm('Вы уверены, что хотите архивировать эту привычку?')) return;
     try {
