@@ -35,6 +35,12 @@ cd habit_tracker
 docker-compose build
 docker-compose up -d
 ```
+or
+```bash
+git clone git@github.com:pyfig/habit_tracker.git
+cd habit_tracker
+./main.sh
+```
 
 - **Backend**: http://localhost:8000  
 - **Frontend**: http://localhost:3000  
