@@ -29,13 +29,18 @@ async def create_habit(habit_data: HabitCreate, current_user: User = Depends(get
 
 @router.get("/", response_model=List[HabitRead])
 async def get_habits(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    # Возвращаем только активные (неархивные) привычки
+    # Возвращаем только активные (неархивные и невыполненные) привычки
     habits = (
         db.query(Habit)
-          .filter(Habit.user_id == current_user.id, Habit.archived == False)
+          .filter(
+              Habit.user_id == current_user.id,
+              Habit.archived == False,
+              Habit.completed == False  # исключаем выполненные
+          )
           .all()
     )
     return habits
+
 
 @router.get("/{habit_id}", response_model=HabitRead)
 async def get_habit(habit_id: UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
@@ -78,6 +83,20 @@ async def archive_habit(habit_id: UUID, current_user: User = Depends(get_current
     db.commit()
     db.refresh(habit)
     return None
+
+@router.get("/completed", response_model=List[HabitRead])
+async def get_completed_habits(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    completed_habits = (
+        db.query(Habit)
+          .filter(
+              Habit.user_id == current_user.id,
+              Habit.completed == True
+          )
+          .all()
+    )
+    return completed_habits
+
+
 
 @router.post("/{habit_id}/complete", status_code=status.HTTP_204_NO_CONTENT)
 async def complete_habit(

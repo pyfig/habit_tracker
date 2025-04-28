@@ -23,14 +23,32 @@ function closeHabitModal() {
   habitModal.style.display = 'none';
 }
 
-// Загрузка привычек при инициализации
+function renderCompletedHabits() {
+    const completedList = document.getElementById('completed-today-list');
+    completedList.innerHTML = '';
+
+    if (completedHabits.length === 0) {
+        completedList.innerHTML = '<li>Нет выполненных привычек</li>';
+        return;
+    }
+
+    completedHabits.forEach(habit => {
+        const li = document.createElement('li');
+        li.textContent = habit.name;
+        completedList.appendChild(li);
+    });
+}
+
+
 
 async function loadHabits() {
     try {
         const token = getToken();
         habits = await habitsApi.getAll(token);
         // Фильтруем архивные привычки: показываем только active
-        habits = habits.filter(habit => !habit.archived);
+        // habits = habits.filter(habit => !habit.archived);
+        habits = habits.filter(h => !h.archived && !h.completed);
+
         renderHabits();
         renderCompletedToday();
     } catch (error) {
