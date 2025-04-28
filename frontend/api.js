@@ -101,6 +101,9 @@ const marksApi = {
     // Удаление отметки по id
     delete: async (id, token) => {
       return apiRequest(`/marks/${id}`, 'DELETE', null, token);
+    },
+    create: async (markData, token) => {
+      return apiRequest('/marks', 'POST', markData, token);
     }
   };
   

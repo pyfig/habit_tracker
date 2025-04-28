@@ -95,17 +95,17 @@ function renderHabits() {
 
 
 
-async function loadHabits() {
-    try {
-        const token = getToken();
-        habits = await habitsApi.getAll(token);
-        habits = habits.filter(habit => !habit.archived);
-        renderHabits();
-        renderCompletedToday();
-    } catch (error) {
-        console.error('Ошибка при загрузке привычек:', error);
-    }
-}
+// async function loadHabits() {
+//     try {
+//         const token = getToken();
+//         habits = await habitsApi.getAll(token);
+//         habits = habits.filter(habit => !habit.archived);
+//         renderHabits();
+//         renderCompletedToday();
+//     } catch (error) {
+//         console.error('Ошибка при загрузке привычек:', error);
+//     }
+// }
 
 
 
@@ -180,6 +180,25 @@ async function archiveHabit(habitId) {
     }
 }
 
+async function renderCompletedToday() {
+    const completedList = document.getElementById('completed-today-list');
+    completedList.innerHTML = '';
+
+    const completedToday = habits.filter(habit => habit.completed && !habit.archived);
+
+    if (completedToday.length === 0) {
+        completedList.innerHTML = '<li>Нет выполненных привычек</li>';
+        return;
+    }
+
+    completedToday.forEach(habit => {
+        const li = document.createElement('li');
+        li.textContent = habit.name;
+        completedList.appendChild(li);
+    });
+}
+
+
 async function deleteHabit(habitId) {
     if (!confirm('Удалить эту привычку?')) return;
     try {
@@ -200,21 +219,29 @@ async function completeHabit(habitId) {
     console.log('Complete clicked', habitId);
     try {
         const token = getToken();
+        // 1) Помечаем привычку на бэке
         await habitsApi.complete(habitId, token);
-        console.log('Complete API request done');
 
+        // 2) Создаём отметку за сегодняшний день
+        const todayStr = formatDate(new Date());
+        await marksApi.create({ habit_id: habitId, date: todayStr }, token);
+
+        // 3) Обновляем локальную модель marks и UI
+        if (!allMarks[habitId]) allMarks[habitId] = [];
+        allMarks[habitId].push({ id: null, date: todayStr });  // id не нужен для UI
         const completedHabit = habits.find(h => h.id === habitId);
-        if (completedHabit) {
-            completedHabit.completed = true;  // ← ставим галочку
-        }
+        if (completedHabit) completedHabit.completed = true;
 
-        renderHabits();          // обновляем активные привычки
-        renderCompletedToday();  // обновляем выполненные привычки
+        renderHabits();       // обновляем список активных
+        renderCalendar();     // отмечаем день в календаре
+        renderCompletedToday();// обновляем список выполненных сегодня
     } catch (error) {
         console.error('Ошибка при выполнении привычки:', error);
         alert('Не удалось отметить привычку как выполненную.');
     }
 }
+
+
 
 
 
