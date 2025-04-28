@@ -116,10 +116,8 @@ class ApiClient {
     }
   }
   
-  // Добавлена синхронизация данных календаря
   async syncCalendar(habitId) {
     const marks = await this.getMarks(habitId);
-    // Логика обновления интерфейса календаря
     return marks;
   }
 
@@ -134,7 +132,7 @@ class ApiClient {
     return this.request(`/habits/${id}`, { method: 'DELETE' });
   }
 
-  // Отметки
+  
   async getMarks(habitId) {
     return this.request(`/marks/habit/${habitId}`, { method: 'GET' });
   }
@@ -161,7 +159,7 @@ const habitsApi = {
   create: (habitData, token) => api.createHabit(habitData),
   update: (id, habitData, token) => api.updateHabit(id, habitData),
   delete: (id, token) => api.deleteHabit(id),
-  complete: (id, token) => api.completeHabit(id)  // ← вот это добавляем!
+  complete: (id, token) => api.completeHabit(id)  
 };
 
 // API для работы с отметками

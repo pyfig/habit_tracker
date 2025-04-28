@@ -23,8 +23,7 @@ class Habit(Base):
     name = Column(String, nullable=False)
     description = Column(Text, nullable=True)
     archived = Column(Boolean, default=False)
-    completed = Column(Boolean, default=False)  # Новое поле для выполнения
-
+    completed = Column(Boolean, default=False) 
     user = relationship("User", back_populates="habits")
     marks = relationship("Mark", back_populates="habit", cascade="all, delete-orphan")
 
