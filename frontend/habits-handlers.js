@@ -39,18 +39,13 @@ function renderCompletedHabits() {
     });
 }
 
-
-
 async function loadHabits() {
     try {
         const token = getToken();
         habits = await habitsApi.getAll(token);
-        // Фильтруем архивные привычки: показываем только active
-        // habits = habits.filter(habit => !habit.archived);
         habits = habits.filter(h => !h.archived && !h.completed);
-
         renderHabits();
-        renderCompletedToday();
+        // renderCompletedToday();
     } catch (error) {
         console.error('Ошибка при загрузке привычек:', error);
     }
@@ -92,24 +87,6 @@ function renderHabits() {
         habitElement.querySelector('.archive-habit').addEventListener('click', () => archiveHabit(habit.id));
     });
 }
-
-
-
-// async function loadHabits() {
-//     try {
-//         const token = getToken();
-//         habits = await habitsApi.getAll(token);
-//         habits = habits.filter(habit => !habit.archived);
-//         renderHabits();
-//         renderCompletedToday();
-//     } catch (error) {
-//         console.error('Ошибка при загрузке привычек:', error);
-//     }
-// }
-
-
-
-
 
 // Добавление новой привычки
 async function addHabit() {
@@ -181,21 +158,25 @@ async function archiveHabit(habitId) {
 }
 
 async function renderCompletedToday() {
+    const todayStr = formatDate(new Date());
     const completedList = document.getElementById('completed-today-list');
     completedList.innerHTML = '';
-
-    const completedToday = habits.filter(habit => habit.completed && !habit.archived);
-
-    if (completedToday.length === 0) {
-        completedList.innerHTML = '<li>Нет выполненных привычек</li>';
-        return;
-    }
-
-    completedToday.forEach(habit => {
-        const li = document.createElement('li');
-        li.textContent = habit.name;
-        completedList.appendChild(li);
+    
+    // Получаем привычки с отметками на сегодня
+    const doneHabits = habits.filter(habit => {
+        const habitMarks = allMarks[habit.id] || [];
+        return habitMarks.some(mark => mark.date === todayStr);
     });
+
+    if (doneHabits.length === 0) {
+        completedList.innerHTML = '<li>Нет выполненных привычек</li>';
+    } else {
+        doneHabits.forEach(habit => {
+            const li = document.createElement('li');
+            li.textContent = habit.name;
+            completedList.appendChild(li);
+        });
+    }
 }
 
 
@@ -216,36 +197,27 @@ async function deleteHabit(habitId) {
 
 
 async function completeHabit(habitId) {
-    console.log('Complete clicked', habitId);
     try {
         const token = getToken();
-        // 1) Помечаем привычку на бэке
-        await habitsApi.complete(habitId, token);
-
-        // 2) Создаём отметку за сегодняшний день
         const todayStr = formatDate(new Date());
+        
+        // Помечаем привычку как выполненную на бэке
+        await habitsApi.complete(habitId, token);
+        
+        // Создаем отметку за сегодня
         await marksApi.create({ habit_id: habitId, date: todayStr }, token);
-
-        // 3) Обновляем локальную модель marks и UI
-        if (!allMarks[habitId]) allMarks[habitId] = [];
-        allMarks[habitId].push({ id: null, date: todayStr });  // id не нужен для UI
-        const completedHabit = habits.find(h => h.id === habitId);
-        if (completedHabit) completedHabit.completed = true;
-
-        renderHabits();       // обновляем список активных
-        renderCalendar();     // отмечаем день в календаре
-        renderCompletedToday();// обновляем список выполненных сегодня
+        
+        // Обновляем локальные данные
+        const habit = habits.find(h => h.id === habitId);
+        if (habit) habit.completed = true;
+        
+        // Перезагружаем данные
+        await loadAllMarks();
+        renderHabits();
+        renderCompletedToday();
     } catch (error) {
-        console.error('Ошибка при выполнении привычки:', error);
-        alert('Не удалось отметить привычку как выполненную.');
+        console.error('Ошибка:', error);
+        alert('Не удалось выполнить привычку');
     }
 }
-
-
-
-
-
-
-// Инициализация
-loadHabits();
 
