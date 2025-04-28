@@ -18,24 +18,21 @@ const monthNames = [
     'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
 ];
 
-// Названия дней недели
 const weekdayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 
-// Функция для загрузки отметок для всех привычек
 async function loadAllMarks() {
     try {
         const token = getToken();
-        allMarks = {};
-        
-        // Загружаем отметки для каждой привычки
+        allMarks = {}; // Очищаем предыдущие данные
         for (const habit of habits) {
             const marks = await marksApi.getByHabit(habit.id, token);
             allMarks[habit.id] = marks;
         }
-        
-        renderCalendar();
+        renderCalendar(); // Перерисовываем календарь
+        renderCompletedToday(); // Обновляем список выполненных сегодня привычек
     } catch (error) {
         console.error('Ошибка при загрузке отметок:', error);
+        alert('Не удалось загрузить отметки. Проверьте подключение к серверу.');
     }
 }
 
@@ -116,19 +113,26 @@ function renderCalendar() {
         // Отмечаем сегодняшний день
         if (dateStr === todayDate) {
             dayElement.classList.add('today');
+            dayElement.classList.add('enabled');
         }
         // Отмечаем дни с отметками
         if (hasMarkOnDate(date)) {
             dayElement.classList.add('marked');
         }
-        // Блокируем будущее
-        if (date > today) {
+
+        if (date < today) {
             dayElement.classList.add('disabled');
             dayElement.style.pointerEvents = 'none';
-            dayElement.style.opacity = '0.5';
+            dayElement.style.opacity = '0.7';
+        }
+        // Блокируем будущее
+        if (date >= today) {
+            dayElement.classList.add('disabled');
+            dayElement.style.pointerEvents = 'none';
+            dayElement.style.opacity = '0.7';
         } else {
             // Добавляем обработчик клика для добавления/удаления отметки
-            dayElement.addEventListener('click', () => toggleMark(dateStr));
+            dayElement.removeEventListener('click', () => toggleMark(dateStr));
         }
         calendarElement.appendChild(dayElement);
     }
@@ -145,25 +149,6 @@ function renderCalendar() {
         calendarElement.appendChild(dayElement);
     }
 }
-// файл: frontend/calendar.js
-
-// После загрузки отметок обновляем календарь и список выполненных сегодня
-async function loadAllMarks() {
-    try {
-        const token = getToken();
-        allMarks = {};
-        for (const habit of habits) {
-            const marks = await marksApi.getByHabit(habit.id, token);
-            allMarks[habit.id] = marks;
-        }
-        renderCalendar();
-        renderCompletedToday(); // Обновляем список выполненных сегодня
-    } catch (error) {
-        console.error('Ошибка при загрузке отметок:', error);
-    }
-}
-
-
 
 // Функция для отображения списка выполненных сегодня привычек
 function renderCompletedToday() {
@@ -226,24 +211,6 @@ async function toggleMark(dateStr) {
 
     const selectedHabitId = habits[0].id;
     await processMarkToggle(selectedHabitId, dateStr);
-}
-
-// файл: frontend/calendar.js
-
-// После загрузки отметок обновляем календарь и список выполненных сегодня
-async function loadAllMarks() {
-    try {
-        const token = getToken();
-        allMarks = {};
-        for (const habit of habits) {
-            const marks = await marksApi.getByHabit(habit.id, token);
-            allMarks[habit.id] = marks;
-        }
-        renderCalendar();
-        renderCompletedToday(); // Обновляем список выполненных сегодня
-    } catch (error) {
-        console.error('Ошибка при загрузке отметок:', error);
-    }
 }
 
 

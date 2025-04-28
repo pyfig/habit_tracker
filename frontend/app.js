@@ -3,21 +3,20 @@
 let currentUser = null;
 
 // Функция для инициализации приложения
-function initApp() {
-    // Проверяем, авторизован ли пользователь
+async function initApp() {
     if (isAuthenticated()) {
-        // Если авторизован, загружаем данные пользователя
-        loadUserData();
+        await loadUserData(); // Добавлен await
     }
-    
-    // Инициализируем обработчики событий
     initEventListeners();
 }
 
 // Функция для загрузки данных пользователя
 function loadUserData() {
-    // Загружаем привычки пользователя
-    loadHabits();
+    loadHabits().then(() => {
+        loadAllMarks(); // Загружаем отметки после загрузки привычек
+    }).catch(error => {
+        console.error('Ошибка при загрузке данных:', error);
+    });
 }
 
 // Функция для инициализации обработчиков событий
