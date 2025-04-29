@@ -57,7 +57,6 @@ function renderHabits() {
     const habitsList = document.getElementById('habits-list');
     // Очищаем текущий список
     habitsList.innerHTML = '';
-    // Получаем сегодняшнюю дату в формате 'YYYY-MM-DD' (убедитесь, что функция formatDate определена и доступна)
     const todayStr = formatDate(new Date());
 
     // Фильтруем массив 'habits' (глобальный или доступный в этой области видимости)
@@ -67,7 +66,7 @@ function renderHabits() {
         if (habit.archived) {
             return false; // Исключаем архивированные
         }
-        // Получаем массив отметок для текущей привычки из глобального объекта 'allMarks'
+        // Получаем массив отметок для текущей привычки из глобального объекта allMarks
         // Если отметок нет, используем пустой массив
         const habitMarks = allMarks[habit.id] || [];
         // Проверяем, есть ли в массиве отметок хотя бы одна с сегодняшней датой
@@ -108,13 +107,13 @@ function renderHabits() {
         // Добавляем созданный элемент привычки в список на странице
         habitsList.appendChild(habitElement);
 
-        // Обработчик для кнопки "Отметить выполненной"
+        // "Отметить выполненной"
         habitElement.querySelector('.complete-habit').addEventListener('click', () => completeHabit(habit.id));
-        // Обработчик для кнопки "Редактировать"
+        // "Редактировать"
         habitElement.querySelector('.edit-habit').addEventListener('click', () => openHabitModal(habit.id));
-        // Обработчик для кнопки "Удалить"
+        // "Удалить"
         habitElement.querySelector('.delete-habit').addEventListener('click', () => deleteHabit(habit.id));
-        // Обработчик для кнопки "Архивировать"
+        // "Архивировать"
         habitElement.querySelector('.archive-habit').addEventListener('click', () => archiveHabit(habit.id));
     });
 }
