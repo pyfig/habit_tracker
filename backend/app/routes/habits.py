@@ -34,7 +34,6 @@ async def get_habits(current_user: User = Depends(get_current_user), db: Session
           .filter(
               Habit.user_id == current_user.id,
               Habit.archived == False,
-              Habit.completed == False  
           )
           .all()
     )
