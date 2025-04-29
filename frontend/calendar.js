@@ -23,16 +23,29 @@ const weekdayNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
 async function loadAllMarks() {
     try {
         const token = getToken();
-        allMarks = {}; // Очищаем предыдущие данные
+        allMarks = {};
+        if (!habits || habits.length === 0) {
+             console.warn("loadAllMarks: Массив habits пуст или не загружен.");
+
+        }
+
+        console.log("Загрузка отметок для привычек:", habits); 
         for (const habit of habits) {
+            console.log(`Запрос отметок для habit.id: ${habit.id}`); 
             const marks = await marksApi.getByHabit(habit.id, token);
+            console.log(`Получены отметки для ${habit.id}:`, marks); 
             allMarks[habit.id] = marks;
         }
-        renderCalendar(); // Перерисовываем календарь
-        renderCompletedToday(); // Обновляем список выполненных сегодня привычек
+        console.log("Финальный объект allMarks:", allMarks);
+
+        renderCalendar();       
+        renderCompletedToday(); 
+        renderHabits();         
+
     } catch (error) {
-        console.error('Ошибка при загрузке отметок:', error);
-        alert('Не удалось загрузить отметки. Проверьте подключение к серверу.');
+        console.error('Ошибка при загрузке отметок (loadAllMarks):', error); 
+        console.error(error);
+        alert('Не удалось загрузить отметки.');
     }
 }
 
