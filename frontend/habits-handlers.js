@@ -44,7 +44,7 @@ async function loadHabits() {
         const token = getToken();
         habits = await habitsApi.getAll(token);
         habits = habits.filter(h => !h.archived && !h.completed);
-        renderHabits();
+        // renderHabits();
         // renderCompletedToday();
     } catch (error) {
         console.error('Ошибка при загрузке привычек:', error);
@@ -53,37 +53,68 @@ async function loadHabits() {
 
 // Отображение списка привычек
 function renderHabits() {
+    // Получаем ссылку на элемент списка привычек
+    const habitsList = document.getElementById('habits-list');
+    // Очищаем текущий список
     habitsList.innerHTML = '';
+    // Получаем сегодняшнюю дату в формате 'YYYY-MM-DD' (убедитесь, что функция formatDate определена и доступна)
+    const todayStr = formatDate(new Date());
 
-    // Отбираем привычки, которые НЕ архивированы и НЕ выполнены
-    const activeHabits = habits.filter(habit => !habit.archived && !habit.completed);
+    // Фильтруем массив 'habits' (глобальный или доступный в этой области видимости)
+    // Оставляем только те привычки, которые НЕ архивированы и для которых НЕТ отметки о выполнении сегодня
+    const activeHabitsToday = habits.filter(habit => {
+        // Проверяем, не архивирована ли привычка
+        if (habit.archived) {
+            return false; // Исключаем архивированные
+        }
+        // Получаем массив отметок для текущей привычки из глобального объекта 'allMarks'
+        // Если отметок нет, используем пустой массив
+        const habitMarks = allMarks[habit.id] || [];
+        // Проверяем, есть ли в массиве отметок хотя бы одна с сегодняшней датой
+        const isCompletedToday = habitMarks.some(mark => mark.date === todayStr);
+        // Возвращаем true (оставляем привычку), если она НЕ выполнена сегодня
+        return !isCompletedToday;
+    });
 
-    if (activeHabits.length === 0) {
-        habitsList.innerHTML = '<div class="empty-state">У вас пока нет активных привычек.</div>';
+    // Проверяем, остались ли привычки для отображения после фильтрации
+    if (activeHabitsToday.length === 0) {
+        // Если активных привычек на сегодня нет, выводим сообщение
+        habitsList.innerHTML = '<div class="empty-state">Как-то здесь пустовато... Давай добавим привычку!</div>';
+        // Завершаем выполнение функции
         return;
     }
 
-    activeHabits.forEach(habit => {
+    // Проходимся по отфильтрованному массиву привычек, которые нужно отобразить
+    activeHabitsToday.forEach(habit => {
+        // Создаем новый div-элемент для привычки
         const habitElement = document.createElement('div');
+        // Присваиваем класс для стилизации
         habitElement.className = 'habit-item';
+        // Заполняем HTML-содержимое элемента данными привычки и кнопками действий
+        // Важно: Используем habit.id из отфильтрованного списка для атрибутов data-id
         habitElement.innerHTML = `
             <div class="habit-info">
                 <h3>${habit.name}</h3>
                 <p>${habit.description || ''}</p>
             </div>
             <div class="habit-actions">
-                <button class="btn icon-btn edit-habit" data-id="${habit.id}"><i class="fas fa-edit"></i></button>
-                <button class="btn icon-btn archive-habit" data-id="${habit.id}"><i class="fas fa-archive"></i></button>
-                <button class="btn icon-btn delete-habit" data-id="${habit.id}"><i class="fas fa-trash"></i></button>
-                <button class="btn icon-btn complete-habit" data-id="${habit.id}"><i class="fa-solid fa-circle-check"></i></button>
+                <button class="btn icon-btn edit-habit" data-id="${habit.id}" title="Редактировать"><i class="fas fa-edit"></i></button>
+                <button class="btn icon-btn archive-habit" data-id="${habit.id}" title="Архивировать"><i class="fas fa-archive"></i></button>
+                <button class="btn icon-btn delete-habit" data-id="${habit.id}" title="Удалить"><i class="fas fa-trash"></i></button>
+                <button class="btn icon-btn complete-habit" data-id="${habit.id}" title="Отметить выполненной сегодня"><i class="fa-solid fa-circle-check"></i></button>
             </div>
         `;
 
+        // Добавляем созданный элемент привычки в список на странице
         habitsList.appendChild(habitElement);
 
+        // Обработчик для кнопки "Отметить выполненной"
         habitElement.querySelector('.complete-habit').addEventListener('click', () => completeHabit(habit.id));
+        // Обработчик для кнопки "Редактировать"
         habitElement.querySelector('.edit-habit').addEventListener('click', () => openHabitModal(habit.id));
+        // Обработчик для кнопки "Удалить"
         habitElement.querySelector('.delete-habit').addEventListener('click', () => deleteHabit(habit.id));
+        // Обработчик для кнопки "Архивировать"
         habitElement.querySelector('.archive-habit').addEventListener('click', () => archiveHabit(habit.id));
     });
 }
@@ -201,10 +232,7 @@ async function completeHabit(habitId) {
         const token = getToken();
         const todayStr = formatDate(new Date());
         
-        // Помечаем привычку как выполненную на бэке
-        await habitsApi.complete(habitId, token);
-        
-        // Создаем отметку за сегодня
+
         await marksApi.create({ habit_id: habitId, date: todayStr }, token);
         
         // Обновляем локальные данные
