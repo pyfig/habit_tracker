@@ -80,6 +80,9 @@ const habitsApi = {
     },
     getCompleted: async (token) => {
         return apiRequest('/habits/completed', 'GET', null, token)
+    },
+    getArchived: async (token) => {
+        return apiRequest('/habits/archived', 'GET', null, token);
     }
 };
 

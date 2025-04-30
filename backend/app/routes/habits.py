@@ -94,7 +94,17 @@ async def get_completed_habits(current_user: User = Depends(get_current_user), d
     )
     return completed_habits
 
-
+@router.get("/archived", response_model=List[HabitRead])
+async def get_archived_habits(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    archived_habits = (
+        db.query(Habit)
+          .filter(
+              Habit.user_id == current_user.id,
+              Habit.archived == True
+          )
+          .all()
+    )
+    return archived_habits
 @router.post("/{habit_id}/complete", status_code=status.HTTP_204_NO_CONTENT)
 async def complete_habit(
     habit_id: UUID, 

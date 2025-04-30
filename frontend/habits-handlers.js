@@ -51,6 +51,51 @@ async function loadHabits() {
     }
 }
 
+async function loadArchivedHabits() {
+    try {
+        const token = getToken();
+        const archived = await habitsApi.getArchived(token);
+        renderArchivedHabits(archived);
+    } catch (error) {
+        console.error('Ошибка загрузки архивных привычек:', error);
+    }
+}
+
+function renderArchivedHabits(archivedHabits) {
+    const list = document.getElementById('archived-habits-list');
+    list.innerHTML = '';
+    
+    if (archivedHabits.length === 0) {
+        list.innerHTML = '<li class="archived-item">Архив пуст</li>';
+        return;
+    }
+
+    archivedHabits.forEach(habit => {
+        const li = document.createElement('li');
+        li.className = 'archived-item';
+        li.innerHTML = `
+            <span>${habit.name}</span>
+            <button class="btn icon-btn recover-habit" data-id="${habit.id}" title="Восстановить"><i class="fas fa-undo"></i></button>
+        `;
+        li.querySelector('.recover-habit').addEventListener('click', () => recoverHabit(habit.id));
+        list.appendChild(li);
+    });
+}
+
+async function recoverHabit(habitId) {
+    if (!confirm('Восстановить привычку из архива?')) return;
+    try {
+        const token = getToken();
+        await habitsApi.update(habitId, { archived: false }, token);
+        // Обновляем список
+        await Promise.all([loadHabits(), loadArchivedHabits()]);
+        renderHabits();
+    } catch (error) {
+        console.error('Ошибка восстановления привычки:', error);
+        alert('Не удалось восстановить привычку');
+    }
+}
+
 // Отображение списка привычек
 function renderHabits() {
     // Получаем ссылку на элемент списка привычек

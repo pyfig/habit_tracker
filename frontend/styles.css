@@ -1,13 +1,44 @@
 :root {
-    --primary-color: #4a6fa5;
-    --primary-dark: #3a5a8c;
+    --primary-color: #007a5e; /* Зеленый Сбербанка */
+    --primary-dark: #005f46;
     --secondary-color: #6c757d;
     --success-color: #60e980;
-    --danger-color: #dc3545;
     --light-color: #f8f9fa;
-    --dark-color: #343a40;
-    --border-color: #dee2e6;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --dark-color: #212529;
+    --border-color: #d1d5da;
+    --shadow: 0 4px 12px rgba(0, 122, 94, 0.1); /* Зеленая тень */
+}
+
+/* Кнопки */
+.primary-btn {
+    background-color: var(--primary-color);
+}
+
+.primary-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Заголовки */
+h1, h2, h3 {
+    color: var(--primary-color);
+}
+
+/* Карточки привычек */
+.habit-item {
+    border-left-color: var(--primary-color);
+    box-shadow: var(--shadow);
+}
+
+/* Календарь */
+.calendar-day.marked {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Модальное окно */
+.modal-content {
+    border-radius: 12px;
+    box-shadow: var(--shadow);
 }
 
 * {
@@ -336,7 +367,63 @@ header {
     margin-top: 20px;
 }
 
+.archived-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
 
+.archived-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.archived-item {
+    background-color: #f0fff0;
+    border-left: 4px solid var(--success-color);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.archived-item:hover {
+    background-color: #e6ffe6;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-content {
+    animation: slideIn 0.3s ease-out;
+    transition: transform 0.3s ease;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+.habit-item {
+    transition: transform 0.2s ease;
+}
+
+.habit-item:hover {
+    transform: scale(1.02);
+}
+
+.calendar-day {
+    transition: all 0.3s ease;
+}
 /* Утилиты */
 .hidden {
     display: none;
