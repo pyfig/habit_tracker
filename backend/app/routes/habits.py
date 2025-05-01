@@ -70,17 +70,7 @@ async def delete_habit(habit_id: UUID, current_user: User = Depends(get_current_
     db.commit()
     return None
 
-@router.post("/{habit_id}/archive", status_code=status.HTTP_204_NO_CONTENT)
-async def archive_habit(habit_id: UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    habit = db.query(Habit).filter(Habit.id == habit_id, Habit.user_id == current_user.id).first()
-    if not habit:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found or doesn't belong to current user")
-    
-    
-    habit.archived = True  
-    db.commit()
-    db.refresh(habit)
-    return None
+
 
 @router.get("/completed", response_model=List[HabitRead])
 async def get_completed_habits(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
@@ -95,16 +85,17 @@ async def get_completed_habits(current_user: User = Depends(get_current_user), d
     return completed_habits
 
 @router.get("/archived", response_model=List[HabitRead])
-async def get_archived_habits(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    archived_habits = (
-        db.query(Habit)
-          .filter(
-              Habit.user_id == current_user.id,
-              Habit.archived == True
-          )
-          .all()
-    )
+async def get_archived_habits(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    archived_habits = db.query(Habit).filter(
+        Habit.user_id == current_user.id,
+        Habit.archived == True
+    ).all()
     return archived_habits
+
+
 @router.post("/{habit_id}/complete", status_code=status.HTTP_204_NO_CONTENT)
 async def complete_habit(
     habit_id: UUID, 
@@ -121,3 +112,31 @@ async def complete_habit(
     db.commit()
     db.refresh(habit)
     return None
+
+
+@router.post("/{habit_id}/archive")
+async def archive_habit(
+    habit_id: str,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    habit = db.query(Habit).filter(Habit.id == habit_id, Habit.user_id == current_user.id).first()
+    if not habit:
+        raise HTTPException(status_code=404, detail="Привычка не найдена")
+    
+    habit.archived = True
+    db.commit()
+    db.refresh(habit)
+    return habit
+
+# @router.post("/{habit_id}/archive", status_code=status.HTTP_204_NO_CONTENT)
+# async def archive_habit(habit_id: UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+#     habit = db.query(Habit).filter(Habit.id == habit_id, Habit.user_id == current_user.id).first()
+#     if not habit:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found or doesn't belong to current user")
+    
+    
+    # habit.archived = True  
+    # db.commit()
+    # db.refresh(habit)
+    # return None
