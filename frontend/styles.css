@@ -424,7 +424,44 @@ header {
 .calendar-day {
     transition: all 0.3s ease;
 }
+
+.header-btns {
+    display: flex;
+    gap: 10px;
+  }
+  
+  /* Стили для модального окна архива */
+  .archived-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+  }
+  
+  .archived-item {
+    background-color: #f0fff0;
+    border-left: 4px solid var(--success-color);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .archived-item:hover {
+    background-color: #e6ffe6;
+  }
+  
+  .recover-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: var(--primary-color);
+  }
+
 /* Утилиты */
 .hidden {
     display: none;
 }
+
