@@ -3,7 +3,7 @@
 set -e  # Остановить скрипт при ошибке
 
 echo "Останавливаю и удаляю контейнеры..."
-docker-compose down 
+docker-compose down
 
 echo "Пересобираю образы..."
 docker-compose build 
