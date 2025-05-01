@@ -55,9 +55,11 @@
         <div id="app-content" class="container hidden">
             <header>
                 <h1>Трекер привычек</h1>
+                <div class="header-btns"> 
+                <button id="archive-btn" class="btn primary-btn">Архив</button>
                 <button id="logout-btn" class="btn secondary-btn">Выйти</button>
+                </div>
             </header>
-            
             <div class="content-wrapper">
                 <div class="habits-section">
                     <div class="habits-header">
@@ -85,10 +87,6 @@
                     <h3>Выполненные привычки сегодня:</h3>
                     <ul id="completed-today-list" class="completed-list"></ul>
                 </div>
-                <div class="archived-section">
-                    <h2>Архив привычек</h2>
-                    <ul id="archived-habits-list" class="archived-list"></ul>
-                </div>
             </div>
         </div>
         
@@ -115,10 +113,20 @@
             </div>
         </div>
     </div>
-    
+
+    <div id="archive-modal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Архив привычек</h2>
+          <ul id="archived-list" class="archived-list"></ul>
+          <div class="form-actions">
+            <button id="close-archive" class="btn secondary-btn">Закрыть</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <script src="api.js"></script>
     <script src="auth.js"></script>
-    <script src="habits.js"></script>
     <script src="habits-handlers.js"></script>
     <script src="calendar.js"></script>
     <script src="app.js"></script>

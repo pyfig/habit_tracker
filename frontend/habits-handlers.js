@@ -5,6 +5,12 @@ const habitForm = document.getElementById('habit-form');
 const habitModal = document.getElementById('habit-modal');
 const modalCloseBtn = habitModal.querySelector('.close');
 const cancelHabitBtn = document.getElementById('cancel-habit');
+const archiveBtn = document.getElementById('archive-btn');
+const archiveModal = document.getElementById('archive-modal');
+const archivedList = document.getElementById('archived-list');
+const closeArchiveBtn = document.getElementById('close-archive');
+
+
 
 let habits = [];
 
@@ -51,50 +57,50 @@ async function loadHabits() {
     }
 }
 
-async function loadArchivedHabits() {
+async function loadArchivedHabits(token) {
     try {
-        const token = getToken();
-        const archived = await habitsApi.getArchived(token);
-        renderArchivedHabits(archived);
+      const archived = await habitsApi.getArchived(token);
+      console.log('Архивированы:', archived); 
+      renderArchivedHabits(archived);
     } catch (error) {
-        console.error('Ошибка загрузки архивных привычек:', error);
+      console.error('Ошибка загрузки архивных привычек:', error);
     }
-}
-
-function renderArchivedHabits(archivedHabits) {
-    const list = document.getElementById('archived-habits-list');
+  }
+  function renderArchivedHabits(archivedHabits) {
+    const list = document.getElementById('archived-list');
     list.innerHTML = '';
-    
     if (archivedHabits.length === 0) {
-        list.innerHTML = '<li class="archived-item">Архив пуст</li>';
-        return;
+      list.innerHTML = '<li class="archived-item">Архив пуст</li>';
+      return;
     }
-
+  
     archivedHabits.forEach(habit => {
-        const li = document.createElement('li');
-        li.className = 'archived-item';
-        li.innerHTML = `
-            <span>${habit.name}</span>
-            <button class="btn icon-btn recover-habit" data-id="${habit.id}" title="Восстановить"><i class="fas fa-undo"></i></button>
-        `;
-        li.querySelector('.recover-habit').addEventListener('click', () => recoverHabit(habit.id));
-        list.appendChild(li);
+      const li = document.createElement('li');
+      li.className = 'archived-item';
+      li.innerHTML = `
+        <span>${habit.name}</span>
+        <button class="btn icon-btn recover-btn" data-id="${habit.id}" title="Восстановить">
+          <i class="fas fa-undo"></i>
+        </button>
+      `;
+      li.querySelector('.recover-btn').addEventListener('click', () => recoverHabit(habit.id));
+      list.appendChild(li);
     });
-}
-
-async function recoverHabit(habitId) {
+  }
+  
+  async function recoverHabit(habitId) {
     if (!confirm('Восстановить привычку из архива?')) return;
     try {
-        const token = getToken();
-        await habitsApi.update(habitId, { archived: false }, token);
-        // Обновляем список
-        await Promise.all([loadHabits(), loadArchivedHabits()]);
-        renderHabits();
+      const token = getToken();
+      await habitsApi.update(habitId, { archived: false }, token); // Обновите метод `update`
+      // Обновление локального списка и интерфейса
+      await Promise.all([loadHabits(), loadArchivedHabits()]);
+      renderHabits();
     } catch (error) {
-        console.error('Ошибка восстановления привычки:', error);
-        alert('Не удалось восстановить привычку');
+      console.error('Ошибка восстановления привычки:', error);
+      alert('Не удалось восстановить привычку');
     }
-}
+  }
 
 // Отображение списка привычек
 function renderHabits() {
@@ -220,17 +226,17 @@ window.addEventListener('click', event => {
 
 async function archiveHabit(habitId) {
     if (!confirm('Вы уверены, что хотите архивировать эту привычку?')) return;
+  
     try {
-        const token = getToken();
-        await habitsApi.archive(habitId, token);
-        habits = habits.filter(habit => habit.id !== habitId);
-        renderHabits();
-        renderCompletedToday();
+      const token = getToken();
+      const updated = await habitsApi.archive(habitId, token);
+      habits = habits.filter(h => h.id !== updated.id);
+      renderHabits();
     } catch (error) {
-        console.error('Ошибка при архивировании привычки:', error);
-        alert('Не удалось архивировать привычку. Попробуйте еще раз.');
+      console.error('Ошибка при архивировании привычки:', error);
+      alert('Не удалось архивировать привычку');
     }
-}
+  }
 
 async function renderCompletedToday() {
     const todayStr = formatDate(new Date());
@@ -268,9 +274,26 @@ async function deleteHabit(habitId) {
         alert('Не удалось удалить привычку. Попробуйте ещё раз.');
     }
 }
+archiveBtn.addEventListener('click', () => {
+    openArchiveModal();
+  });
+async function openArchiveModal() {
+    const token = getToken();
+    archiveModal.style.display = 'block';
+    await loadArchivedHabits(token);
+  }
+  
+  // Обработчики событий для закрытия модального окна
+  closeArchiveBtn.addEventListener('click', closeArchiveModal);
+  archiveModal.addEventListener('click', (e) => {
+    if (e.target === archiveModal) {
+      closeArchiveModal();
+    }
+  });
 
-
-
+function closeArchiveModal() {
+    archiveModal.style.display = 'none';
+}
 async function completeHabit(habitId) {
     try {
         const token = getToken();
