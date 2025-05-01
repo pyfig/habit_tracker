@@ -83,6 +83,9 @@ const habitsApi = {
     },
     getArchived: async (token) => {
         return apiRequest('/habits/archived', 'GET', null, token);
+    },
+    restore: async (habitId, token) => {
+        return apiRequest(`/habits/${habitId}/restore`, 'PUT', null, token);
     }
 };
 
