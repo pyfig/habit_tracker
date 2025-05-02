@@ -50,8 +50,9 @@ async function loadHabits() {
         const token = getToken();
         habits = await habitsApi.getAll(token);
         habits = habits.filter(h => !h.archived && !h.completed);
-        // renderHabits();
-        // renderCompletedToday();
+        renderHabits();
+        renderCompletedToday();
+        await loadArchivedHabits(token); 
     } catch (error) {
         console.error('Ошибка при загрузке привычек:', error);
     }
