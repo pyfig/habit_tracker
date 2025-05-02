@@ -1,35 +1,39 @@
 # Habit Tracker
 
-Simple and intuitive app to form and maintain daily habits. Create, edit, track progress in the calendar, and see completed habits for today.
+A simple application for forming and maintaining daily habits. Create, edit, mark progress, and track achievements through a calendar.
+
+---
 
 ## Features
 
-### Authentication
-- **Register**: create a new account with username and password
-- **Login**: access your personal habit tracker
-- **Logout**: securely end your session
+### Authentication  
+- **Registration**: create an account with username and password  
+- **Login**: access your personal dashboard  
+- **Logout**: end the session  
 
-### Habit Management
-- **Create**: add a new habit with name and optional description
-- **Edit**: update habit details
-- **Delete**: remove unnecessary habits
-- **Archive**: move inactive habits to archive
+### Habit Management  
+- **Create**: add new habits with descriptions  
+- **Edit**: update habit details  
+- **Delete**: remove habits  
+- **Archive**: move obsolete habits to archive  
+- **Restore from Archive**: return archived habits to active status  
 
-### Progress Tracking
-- **Mark Completion**: mark a habit as completed on a selected day
-- **Calendar View**: visualize your streaks and history
-- **Today's Completed Habits**: see a list of today's successes
-- **Remove Mark**: undo wrong marks
+### Progress Tracking  
+- **Completion Marks**: mark habits as completed for specific dates  
+- **Calendar**: visualize success streaks  
+- **Today's Completed Habits List**  
+- **Mark Deletion**: correct mistakes  
+- **View Archived Habits**: access saved habits via a modal window  
+
+---
 
 ## Quick Start
 
-### Requirements
+### Requirements  
+- Docker installed  
+- Git installed  
 
-- Docker  
-- Git
-
-### Installation
-
+### Installation  
 ```bash
 git clone git@github.com:pyfig/habit_tracker.git
 cd habit_tracker
@@ -38,50 +42,69 @@ cd habit_tracker
 
 - **Backend**: http://localhost:8000  
 - **Frontend**: http://localhost:3000  
-- **Database**: port 5432
-
-
-## Project Structure
-
-```
-📦 habit_tracker
-├─ backend/
-├─ frontend/
-├─ docker-compose.yml
-├─ main.sh
-├─ package.json
-└─ README.md
-```
-
-## API Overview
-
-| Method | Endpoint                     | Description                 |
-|--------|------------------------------|-----------------------------|
-| POST   | `/api/auth/register`         | Register new user           |
-| POST   | `/api/auth/login`            | Login user                  |
-| GET    | `/api/habits`                | Get all habits              |
-| POST   | `/api/habits`                | Create a new habit          |
-| GET    | `/api/habits/{habit_id}`     | Get habit details           |
-| PUT    | `/api/habits/{habit_id}`     | Update habit                |
-| DELETE | `/api/habits/{habit_id}`     | Delete habit                |
-| POST   | `/api/marks`                 | Create a mark (track habit) |
-| GET    | `/api/marks/habit/{habit_id}`| Get all marks for habit     |
-| DELETE | `/api/marks/{mark_id}`       | Delete a mark               |
-
-## Technologies
-
-**Backend**  
-- FastAPI, Uvicorn, SQLAlchemy, PostgreSQL, Docker
-
-**Frontend**  
-- HTML5, CSS3, JavaScript, AJAX, FontAwesome, Vite
-
-## Roadmap
-
-- Automatic tests
-- Habit archive browsing
-- Habit recovery from archive
-- Mobile optimization
-- Analytics and statistics
+- **Database (PostgreSQL)**: port 5432  
 
 ---
+
+## Project Structure  
+```
+📦 habit_tracker
+├─ backend/               # FastAPI backend
+├─ frontend/              # HTML/CSS/JS frontend
+├─ docker-compose.yml     # Container configuration
+├─ main.sh                # Startup script
+├─ package.json           # Frontend dependencies
+└─ README_RUS.md          # Documentation
+```
+
+---
+
+## API  
+
+| Method | Endpoint                        | Description                    |
+|-------|----------------------------------|------------------------------|
+| POST  | `/api/auth/register`             | Register a new user          |
+| POST  | `/api/auth/login`                | Log in to the system         |
+| GET   | `/api/habits`                    | Get all habits               |
+| POST  | `/api/habits`                    | Create a new habit           |
+| GET   | `/api/habits/{habit_id}`         | Get habit details            |
+| PUT   | `/api/habits/{habit_id}`         | Update a habit               |
+| DELETE| `/api/habits/{habit_id}`         | Delete a habit               |
+| POST  | `/api/habits/{habit_id}/archive` | Archive a habit              |
+| POST  | `/api/habits/{habit_id}/restore` | Restore from archive         |
+| GET   | `/api/habits/archived/`          | Get archived habits          |
+| POST  | `/api/marks`                     | Create a progress mark       |
+| GET   | `/api/marks/habit/{habit_id}`    | Get all marks for a habit    |
+| DELETE| `/api/marks/{mark_id}`           | Delete a mark                |
+
+---
+
+## Technologies  
+
+**Backend**  
+- FastAPI, Uvicorn, SQLAlchemy, PostgreSQL, Docker-Compose, Bash  
+
+**Frontend**  
+- HTML5, CSS3, JavaScript, AJAX, FontAwesome, Vite  
+
+---
+
+## Roadmap  
+
+✅ **Implemented**:  
+- Habit restoration from archive  
+- All alerts converted to modal windows  
+- Archive button moves to a dedicated window with archived habits  
+- Restore button returns habits to active list  
+- Added today's completed habits list  
+- Updated UI with styles, icons, animations, and color scheme changes  
+- Habit editing  
+- JWT-based authentication/authorization  
+- Docker-Compose + Bash automated builds  
+- Calendar-based progress tracking (green calendar markers)  
+- Calendar updates limited to current date only  
+
+🚀 **In Development**:  
+- Grafana dashboard  
+- Telegram notifications for completed habits  
+
