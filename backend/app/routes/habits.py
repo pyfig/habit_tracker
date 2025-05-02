@@ -91,7 +91,7 @@ async def get_archived_habits(
 ):
     archived_habits = db.query(Habit).filter(
         Habit.user_id == current_user.id,
-        Habit.archived == True
+        Habit.archived.is_(True)  # Используем is_ для boolean проверки
     ).all()
     return archived_habits
 
