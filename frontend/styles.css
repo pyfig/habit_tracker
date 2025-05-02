@@ -303,8 +303,6 @@ header {
     padding: 5px 0;
 }
 
-/* файл: frontend/styles.css */
-/* Список выполненных сегодня привычек */
 .completed-list {
     list-style-type: disc;
     padding-left: 20px;
@@ -460,7 +458,6 @@ header {
     color: var(--primary-color);
   }
 
-  /* В файле styles.css */
 #archive-modal .modal-content {
     max-width: 600px;
 }
@@ -483,6 +480,18 @@ header {
 .recover-btn:hover {
     transform: scale(1.1);
 }
+
+#confirm-archive-modal .modal-content {
+    max-width: 400px;
+    margin: 15% auto;
+  }
+  #confirm-archive-modal .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+
 /* Утилиты */
 .hidden {
     display: none;
