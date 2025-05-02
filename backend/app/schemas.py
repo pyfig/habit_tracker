@@ -40,6 +40,8 @@ class HabitCreate(HabitBase):
 
 class HabitUpdate(HabitBase):
     name: Optional[str] = None
+    archived: Optional[bool]
+
 
 class HabitRead(HabitBase):
     id: UUID
