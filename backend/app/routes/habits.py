@@ -123,17 +123,7 @@ async def archive_habit(
     db.refresh(habit)
     return habit
 
-# @router.post("/{habit_id}/archive", status_code=status.HTTP_204_NO_CONTENT)
-# async def archive_habit(habit_id: UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-#     habit = db.query(Habit).filter(Habit.id == habit_id, Habit.user_id == current_user.id).first()
-#     if not habit:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found or doesn't belong to current user")
-    
-    
-    # habit.archived = True  
-    # db.commit()
-    # db.refresh(habit)
-    # return None
+
 @router.get("/{habit_id}", response_model=HabitRead)
 async def get_habit(
     habit_id: UUID,
@@ -143,4 +133,18 @@ async def get_habit(
     habit = db.query(Habit).filter(Habit.id == habit_id, Habit.user_id == current_user.id).first()
     if not habit:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
+    return habit
+
+@router.post("/{habit_id}/restore", response_model=HabitRead)
+async def restore_habit(
+    habit_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    habit = db.query(Habit).filter(Habit.id==habit_id, Habit.user_id==current_user.id).first()
+    if not habit:
+        raise HTTPException(404, "Не найдена привычка")
+    habit.archived = False
+    db.commit()
+    db.refresh(habit)
     return habit
