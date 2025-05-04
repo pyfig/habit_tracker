@@ -57,34 +57,17 @@ const authApi = {
 
 // API для работы с привычками
 const habitsApi = {
-    getAll: async (token) => {
-        return apiRequest('/habits', 'GET', null, token);
-    },
-    getById: async (id, token) => {
-        return apiRequest(`/habits/${id}`, 'GET', null, token);
-    },
-    create: async (habitData, token) => {
-        return apiRequest('/habits', 'POST', habitData, token);
-    },
-    update: async (id, habitData, token) => {
-        return apiRequest(`/habits/${id}`, 'PUT', habitData, token);
-    },
-    delete: async (id, token) => {
-        return apiRequest(`/habits/${id}`, 'DELETE', null, token);
-    },
-    archive: async (id, token) => {
-        return apiRequest(`/habits/${id}/archive`, 'POST', null, token);
-    },
-    complete: async (id, token) => {
-        return apiRequest(`/habits/${id}/complete`, 'POST', null, token);
-    },
-    getCompleted: async (token) => {
-        return apiRequest('/habits/completed', 'GET', null, token)
-    },
-    getArchived: async (token) => {
-        return apiRequest('/habits/archived/', 'GET', null, token);
-    },
-    restore: async (id, token) => apiRequest(`/habits/${id}/restore`, 'POST', null, token),
+    getAll: (token) => apiRequest('/habits', 'GET', null, token),
+    getById: (id, token) => apiRequest(`/habits/${id}`, 'GET', null, token),
+    create: (data, token) => apiRequest('/habits', 'POST', data, token),
+    update: (id, data, token) => apiRequest(`/habits/${id}`, 'PUT', data, token),
+    delete: (id, token) => apiRequest(`/habits/${id}`, 'DELETE', null, token),
+    archive: (id, token) => apiRequest(`/habits/${id}/archive`, 'POST', null, token),
+    restore: (id, token) => apiRequest(`/habits/${id}/restore`, 'POST', null, token),
+    complete: (id, token) => apiRequest(`/habits/${id}/complete`, 'POST', null, token),
+    uncomplete: (id, token) => apiRequest(`/habits/${id}/uncomplete`, 'POST', null, token),
+    getCompleted: (token) => apiRequest('/habits/completed', 'GET', null, token),
+    getArchived: (token) => apiRequest('/habits/archived', 'GET', null, token)
 };
 
 

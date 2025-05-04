@@ -171,7 +171,6 @@ function renderCompletedToday() {
     const listEl = document.getElementById('completed-today-list');
     listEl.innerHTML = '';
 
-    // Определяем привычки, у которых есть отметка на сегодняшнюю дату
     const doneHabits = habits.filter(habit => {
         const marks = allMarks[habit.id] || [];
         return marks.some(mark => mark.date === todayStr);
@@ -181,12 +180,37 @@ function renderCompletedToday() {
         listEl.innerHTML = '<li>Нет выполненных привычек</li>';
     } else {
         doneHabits.forEach(habit => {
-            const li = document.createElement('li');
-            li.textContent = habit.name;
-            listEl.appendChild(li);
+            const container = document.createElement('div');
+            container.classList.add('habit-item'); // use active habit styling
+            
+            const title = document.createElement('span');
+            title.classList.add('habit-title');
+            title.textContent = habit.name;
+            container.appendChild(title);
+
+            const btn = document.createElement('button');
+            btn.textContent = 'Вернуть';
+            btn.classList.add('recover-btn');
+            btn.style.marginLeft = 'auto'; // push to right
+            btn.addEventListener('click', async () => {
+                const token = getToken();
+                // delete today's mark
+                const mark = (allMarks[habit.id] || []).find(m => m.date === todayStr);
+                if (mark) {
+                    await marksApi.delete(mark.id, token);
+                }
+                await loadAllMarks();
+                await loadHabits();
+            });
+            container.appendChild(btn);
+
+            listEl.appendChild(container);
         });
     }
 }
+
+  
+
 
 function toggleTodayMark() {
     const today = formatDate(new Date()); // Сегодняшняя дата в формате строки
