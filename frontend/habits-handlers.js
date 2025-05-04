@@ -10,12 +10,17 @@ const archiveModal = document.getElementById('archive-modal');
 const archivedList = document.getElementById('archived-list');
 const closeArchiveBtn = document.getElementById('close-archive');
 
+const confirmDeleteModal = document.getElementById('confirm-delete-modal');
+const confirmDeleteBtn   = document.getElementById('confirm-delete');
+const cancelDeleteBtn    = document.getElementById('cancel-delete');
+
 const confirmArchiveModal = document.getElementById('confirm-archive-modal');
 const confirmArchiveBtn   = document.getElementById('confirm-archive');
 const cancelArchiveBtn    = document.getElementById('cancel-archive');
 
 let habits = [];
 let archiveTargetId = null;
+let deleteTargetId = null;
 
 // Утилиты для работы с модалками
 function showModal(modal) { modal.style.display = 'block'; }
@@ -92,7 +97,7 @@ function renderHabits() {
     habitsList.append(el);
     el.querySelector('.edit-habit').addEventListener('click',()=>openHabitModal(h.id));
     el.querySelector('.archive-habit').addEventListener('click',()=>showConfirmArchive(h.id));
-    el.querySelector('.delete-habit').addEventListener('click',()=>deleteHabit(h.id));
+    el.querySelector('.delete-habit').addEventListener('click', () => showConfirmDelete(h.id));
     el.querySelector('.complete-habit').addEventListener('click',()=>completeHabit(h.id));
   });
 }
@@ -194,6 +199,27 @@ function createHabitElement(habit) {
     return habitElement;
 }
 
+function showConfirmDelete(id) {
+    deleteTargetId = id;
+    showModal(confirmDeleteModal);
+  }
+
+  confirmDeleteBtn.addEventListener('click', async () => {
+    try {
+      await habitsApi.delete(deleteTargetId, getToken());
+      await loadHabits();
+    } catch (e) { console.error(e); }
+    hideModal(confirmDeleteModal);
+    deleteTargetId = null;
+  });
+
+  cancelDeleteBtn.addEventListener('click', () => {
+    hideModal(confirmDeleteModal);
+    deleteTargetId = null;
+  });
+  confirmDeleteModal.addEventListener('click', e => {
+    if (e.target === confirmDeleteModal) hideModal(confirmDeleteModal);
+  });
 
 // Кнопки открытия/закрытия Habit-модалки
 addHabitBtn.addEventListener('click', () => openHabitModal());
