@@ -46,6 +46,7 @@ class HabitUpdate(HabitBase):
 class HabitRead(HabitBase):
     id: UUID
     user_id: UUID
+    completed: bool
 
     class Config:
         orm_mode = True
