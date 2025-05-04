@@ -488,9 +488,37 @@ header {
   #confirm-archive-modal .form-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 15px;
   }
   
+  #completed-today-list .habit-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid var(--success-color);
+    box-shadow: var(--shadow);
+    background: white;
+    margin-bottom: 10px;
+}
+
+#completed-today-list .habit-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+#completed-today-list .recover-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: var(--primary-color);
+    margin-left: auto; 
+}
+
+#completed-today-list .recover-btn:hover {
+    text-decoration: underline;
+}
 
 /* Утилиты */
 .hidden {
