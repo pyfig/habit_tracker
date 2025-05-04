@@ -108,13 +108,7 @@ function renderArchivedHabits(list) {
 async function recoverHabit(id) {
   try{ await habitsApi.restore(id,getToken()); await loadHabits(); hideModal(archiveModal);} catch(e){console.error(e);} }
 
-// Рендер выполненных сегодня
-async function renderCompletedToday() {
-  const today=formatDate(new Date());
-  const listEl=document.getElementById('completed-today-list'); listEl.innerHTML='';
-  const done=habits.filter(h=>(allMarks[h.id]||[]).some(m=>m.date===today));
-  listEl.innerHTML=done.length?done.map(h=>`<li>${h.name}</li>`).join(''):'<li>Нет выполненных привычек</li>';
-}
+
 
 // Удаление привычки
 async function deleteHabit(habitId) {
@@ -181,6 +175,25 @@ habitForm.addEventListener('submit', event => {
   if (editingId) updateHabit(editingId);
   else addHabit();
 });
+
+function createHabitElement(habit) {
+    const habitElement = document.createElement("div");
+    habitElement.textContent = habit.name;
+
+    if (habit.is_done) {
+        const restoreButton = document.createElement("button");
+        restoreButton.textContent = "Вернуть";
+        restoreButton.onclick = async () => {
+            // ("/{habit_id}/restore",
+            await fetch(`/${habit.id/restore}`, { method: "POST" });
+            loadHabits(); // перезагрузка списка
+        };
+        habitElement.appendChild(restoreButton);
+    }
+
+    return habitElement;
+}
+
 
 // Кнопки открытия/закрытия Habit-модалки
 addHabitBtn.addEventListener('click', () => openHabitModal());
