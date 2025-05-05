@@ -1,12 +1,12 @@
 :root {
-    --primary-color: #007a5e; /* Зеленый Сбербанка */
-    --primary-dark: #005f46;
-    --secondary-color: #6c757d;
-    --success-color: #60e980;
+    --primary-color: #5e1fe4; 
+    --primary-dark: #0e005f;
+    --secondary-color: #6f6c7d;
+    --success-color: #ac4bf1;
     --light-color: #f8f9fa;
     --dark-color: #212529;
     --border-color: #d1d5da;
-    --shadow: 0 4px 12px rgba(0, 122, 94, 0.1); /* Зеленая тень */
+    --shadow: 0 4px 12px rgba(18, 0, 122, 0.1);     
 }
 
 /* Кнопки */
