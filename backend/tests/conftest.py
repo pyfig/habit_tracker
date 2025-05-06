@@ -1,24 +1,21 @@
-import os, pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from app.db import Base, get_db
+import pytest_asyncio
+from httpx import AsyncClient
 from app.main import app
+import uuid
 
-engine = create_engine(os.environ["DATABASE_URL"], future=True)
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+@pytest_asyncio.fixture
+async def authenticated_client():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        username = f"user_{uuid.uuid4().hex[:6]}"
+        await ac.post("/api/auth/register", json={"username": username, "password": "testpass"})
+        login_resp = await ac.post("/api/auth/login", json={"username": username, "password": "testpass"})
+        token = login_resp.json()["access_token"]
+        ac.headers.update({"Authorization": f"Bearer {token}"})
+        yield ac
 
-@pytest.fixture(scope="session", autouse=True)
-def prepare_db():
-    Base.metadata.create_all(bind=engine)
-    yield
-    Base.metadata.drop_all(bind=engine)
-
-@pytest.fixture(autouse=True)
-def override_get_db():
-    def _get():
-        db = SessionLocal()
-        try:
-            yield db
-        finally:
-            db.close()
-    app.dependency_overrides[get_db] = _get
+@pytest_asyncio.fixture
+async def authenticated_client_with_habit(authenticated_client):
+    ac = authenticated_client
+    response = await ac.post("/api/habits", json={"name": "Exercise", "description": "Daily exercise"})
+    habit_id = response.json()["id"]
+    return ac, habit_id
