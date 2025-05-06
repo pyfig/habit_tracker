@@ -1,5 +1,7 @@
+version: "3.9"
 
 services:
+  # ──────────── backend ────────────
   backend:
     build: ./backend
     ports:
@@ -7,34 +9,52 @@ services:
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/habit_tracker
-    networks:
-      - habit-network
+      - DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/habit_tracker
+    networks: [habit-network]
     restart: always
 
+  # ──────────── frontend (Nginx SPA) ────────────
   frontend:
     build: ./frontend
     ports:
       - "3000:80"
     depends_on:
       - backend
-    networks:
-      - habit-network
+    networks: [habit-network]
     restart: always
 
+  # ──────────── Postgres ────────────
   db:
     image: postgres:13
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=habit_tracker
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    networks:
-      - habit-network
+    networks: [habit-network]
     restart: always
+    healthcheck:           
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+  # ──────────── pytest ────────────
+  tests:
+    build: ./backend        
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/habit_tracker_test
+      - POSTGRES_PASSWORD=postgres
+    entrypoint: ["/app/tests/entrypoint.sh"]   
+    networks: [habit-network]
+    restart: "no"
 
 networks:
   habit-network:
