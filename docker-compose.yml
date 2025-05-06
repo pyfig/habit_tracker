@@ -1,4 +1,3 @@
-version: "3.9"
 
 services:
   # ──────────── backend ────────────
@@ -55,6 +54,8 @@ services:
     entrypoint: ["/app/tests/entrypoint.sh"]   
     networks: [habit-network]
     restart: "no"
+    volumes:
+      - ./coverage:/app/htmlcov
 
 networks:
   habit-network:
