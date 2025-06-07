@@ -135,20 +135,7 @@ function renderCalendar() {
             dayElement.classList.add('marked');
         }
 
-        if (date < today) {
-            dayElement.classList.add('disabled');
-            dayElement.style.pointerEvents = 'none';
-            dayElement.style.opacity = '0.7';
-        }
-        // Блокируем будущее
-        if (date >= today) {
-            dayElement.classList.add('disabled');
-            dayElement.style.pointerEvents = 'none';
-            dayElement.style.opacity = '0.7';
-        } else {
-            // Добавляем обработчик клика для добавления/удаления отметки
-            dayElement.removeEventListener('click', () => toggleMark(dateStr));
-        }
+        dayElement.addEventListener('click', () => showDateHabits(dateStr));
         calendarElement.appendChild(dayElement);
     }
     
@@ -219,6 +206,26 @@ function toggleTodayMark() {
     if (todayElement) {
         todayElement.classList.toggle('marked');
     }
+}
+
+function showDateHabits(dateStr) {
+    const modal = document.getElementById('date-modal');
+    const title = document.getElementById('date-title');
+    const list = document.getElementById('date-habits-list');
+    title.textContent = dateStr;
+    list.innerHTML = '';
+    habits.forEach(h => {
+        const li = document.createElement('li');
+        li.className = 'metric-item';
+        const done = (allMarks[h.id] || []).some(m => m.date === dateStr);
+        if (done) li.classList.add('done');
+        li.textContent = done ? `${h.name} — выполнено` : h.name;
+        list.appendChild(li);
+    });
+    modal.style.display = 'block';
+    const close = modal.querySelector('.close');
+    close.onclick = () => modal.style.display = 'none';
+    modal.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
 }
 
 

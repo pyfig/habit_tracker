@@ -34,9 +34,18 @@ async function showMetrics() {
     list.innerHTML = '';
     try {
         const data = await profileApi.getMetrics(getToken());
+        const titles = {
+            total_habits: 'Всего привычек',
+            archived_habits: 'В архиве',
+            completed_habits: 'Завершено',
+            active_habits: 'Активно',
+            marks_total: 'Всего отметок',
+            marks_today: 'Отметок сегодня'
+        };
         Object.entries(data).forEach(([k,v]) => {
             const li = document.createElement('li');
-            li.textContent = `${k.replace(/_/g,' ')}: ${v}`;
+            li.className = 'metric-item';
+            li.textContent = `${titles[k] || k}: ${v}`;
             list.appendChild(li);
         });
         document.getElementById('metrics-modal').style.display = 'block';

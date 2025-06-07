@@ -391,6 +391,27 @@ header {
     background-color: #e6ffe6;
 }
 
+.metrics-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.metric-item {
+    background: #f8f9fa;
+    border-left: 4px solid var(--primary-color);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.metric-item.done {
+    border-left-color: var(--success-color);
+}
+
 /* Анимации */
 @keyframes fadeIn {
     from { opacity: 0; }
