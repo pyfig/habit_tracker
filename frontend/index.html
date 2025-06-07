@@ -57,6 +57,7 @@
                 <h1>Трекер привычек</h1>
                 <div class="header-btns"> 
                 <button id="archive-btn" class="btn primary-btn">Архив</button>
+                <button id="metrics-btn" class="btn primary-btn">Статистика</button>
                 <button id="logout-btn" class="btn secondary-btn">Выйти</button>
                 </div>
             </header>
@@ -136,7 +137,7 @@
         </div>
       </div>
 
-    <div id="archive-modal" class="modal">
+      <div id="archive-modal" class="modal">
         <div class="modal-content">
           <span class="close">&times;</span>
           <h2>Архив привычек</h2>
@@ -144,6 +145,22 @@
           <div class="form-actions">
             <button id="close-archive" class="btn secondary-btn">Закрыть</button>
           </div>
+        </div>
+      </div>
+
+      <div id="metrics-modal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Статистика</h2>
+          <ul id="metrics-list" class="metrics-list"></ul>
+        </div>
+      </div>
+
+      <div id="date-modal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Привычки на <span id="date-title"></span></h2>
+          <ul id="date-habits-list" class="metrics-list"></ul>
         </div>
       </div>
     </div>

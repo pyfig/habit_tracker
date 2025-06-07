@@ -64,3 +64,18 @@ async def test_protected_route_requires_token():
     async with AsyncClient(app=app, base_url="http://test") as ac:
         r = await ac.get("/api/habits/")          # без заголовка Authorization
         assert r.status_code == 401
+
+@pytest.mark.asyncio
+async def test_login_wrong_password():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        uname = f"user_{uuid.uuid4().hex[:6]}"
+        await ac.post("/api/auth/register", json={"username": uname, "password": "goodpass"})
+        r = await ac.post("/api/auth/login", json={"username": uname, "password": "otherpass"})
+        assert r.status_code == 401
+
+@pytest.mark.asyncio
+async def test_invalid_token_access():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        ac.headers.update({"Authorization": "Bearer invalid"})
+        r = await ac.get("/api/habits/")
+        assert r.status_code == 401

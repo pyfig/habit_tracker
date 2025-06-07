@@ -16,6 +16,6 @@ async def authenticated_client():
 @pytest_asyncio.fixture
 async def authenticated_client_with_habit(authenticated_client):
     ac = authenticated_client
-    response = await ac.post("/api/habits", json={"name": "Exercise", "description": "Daily exercise"})
+    response = await ac.post("/api/habits/", json={"name": "Exercise", "description": "Daily exercise"})
     habit_id = response.json()["id"]
     return ac, habit_id
