@@ -33,3 +33,24 @@ async def test_update_habit_not_found(authenticated_client):
     bad_id = uuid.uuid4()
     r = await authenticated_client.put(f"/api/habits/{bad_id}", json={"name":"X"})
     assert r.status_code == 404
+@pytest.mark.asyncio
+async def test_complete_and_uncomplete_habit(authenticated_client_with_habit):
+    ac, habit_id = authenticated_client_with_habit
+    r = await ac.post(f"/api/habits/{habit_id}/complete")
+    assert r.status_code == 204
+
+    completed = await ac.get("/api/habits/completed")
+    assert habit_id in [h["id"] for h in completed.json()]
+
+    r = await ac.post(f"/api/habits/{habit_id}/uncomplete")
+    assert r.status_code == 204
+    completed = await ac.get("/api/habits/completed")
+    assert habit_id not in [h["id"] for h in completed.json()]
+
+@pytest.mark.asyncio
+async def test_delete_habit(authenticated_client_with_habit):
+    ac, habit_id = authenticated_client_with_habit
+    r = await ac.delete(f"/api/habits/{habit_id}")
+    assert r.status_code == 204
+    r = await ac.get("/api/habits/")
+    assert habit_id not in [h["id"] for h in r.json()]
