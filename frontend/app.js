@@ -23,9 +23,15 @@ function initEventListeners() {
     const metricsBtn = document.getElementById('metrics-btn');
     const metricsModal = document.getElementById('metrics-modal');
     const metricsClose = metricsModal.querySelector('.close');
+    const metricsCloseBtn = document.getElementById('close-metrics');
 
     metricsBtn.addEventListener('click', showMetrics);
     metricsClose.addEventListener('click', () => metricsModal.style.display = 'none');
+    metricsCloseBtn.addEventListener('click', () => {
+        metricsCloseBtn.classList.add('clicked');
+        setTimeout(() => metricsCloseBtn.classList.remove('clicked'), 300);
+        metricsModal.style.display = 'none';
+    });
     metricsModal.addEventListener('click', e => { if (e.target === metricsModal) metricsModal.style.display = 'none'; });
 }
 

@@ -276,6 +276,14 @@ header {
 
 .calendar-day.today {
     border: 2px solid var(--primary-color);
+    background-color: #e8f5e9; /* Светло-зеленый фон для сегодняшнего дня */
+    color: #2e7d32; /* Темно-зеленый текст */
+}
+
+.calendar-day.today.marked {
+    background-color: var(--success-color); /* При выполнении окрашиваем как остальные отмеченные дни */
+    color: white;
+    border-color: var(--success-color);
 }
 
 .calendar-day.marked {
@@ -423,6 +431,12 @@ header {
     to { transform: translateY(0); opacity: 1; }
 }
 
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
 .modal-content {
     animation: slideIn 0.3s ease-out;
     transition: transform 0.3s ease;
@@ -430,6 +444,10 @@ header {
 
 .btn:hover {
     transform: scale(1.05);
+}
+
+#close-metrics.clicked {
+    animation: pulse 0.3s ease;
 }
 
 .habit-item {
