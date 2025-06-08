@@ -446,7 +446,7 @@ header {
     transform: scale(1.05);
 }
 
-#metrics-btn.clicked {
+#close-metrics.clicked {
     animation: pulse 0.3s ease;
 }
 
