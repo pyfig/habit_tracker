@@ -3,11 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routes import auth, habits, marks, profile
 from app.models import Base
 from app.db import engine
+from prometheus_fastapi_instrumentator import Instrumentator
 
 # Создаем таблицы в базе данных
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Habit Tracker API")
+
+# Экспонируем Prometheus метрики
+Instrumentator().instrument(app).expose(app)
 
 # Настройка CORS
 origins = [

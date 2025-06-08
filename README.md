@@ -64,9 +64,14 @@ cd habit_tracker
 | Service  | URL                                            |
 | -------- | ---------------------------------------------- |
 | Backend  | [http://localhost:8000](http://localhost:8000) |
-| Frontend | [http://localhost:3000](http://localhost:3000) |                     
+| Frontend | [http://localhost:3000](http://localhost:3000) |
+| Grafana  | [http://localhost:3001](http://localhost:3001) |
+| Prometheus | [http://localhost:9090](http://localhost:9090) |
 
 Front-end is a static SPA (HTML / CSS / vanilla JS) served by Nginx.
+
+Prometheus collects metrics from the API and Postgres. Grafana is preconfigured
+with this Prometheus datasource and a starter dashboard.
 
 ---
 

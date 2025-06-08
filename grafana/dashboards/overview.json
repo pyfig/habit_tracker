@@ -1,0 +1,20 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Habit Tracker Overview",
+    "panels": [
+      {
+        "type": "graph",
+        "title": "API Requests",
+        "targets": [
+          {"expr": "http_requests_total", "legendFormat": "requests"}
+        ],
+        "datasource": "Prometheus",
+        "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8}
+      }
+    ],
+    "schemaVersion": 27,
+    "version": 1
+  }
+}
+
