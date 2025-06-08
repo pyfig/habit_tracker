@@ -24,7 +24,11 @@ function initEventListeners() {
     const metricsModal = document.getElementById('metrics-modal');
     const metricsClose = metricsModal.querySelector('.close');
 
-    metricsBtn.addEventListener('click', showMetrics);
+    metricsBtn.addEventListener('click', () => {
+        metricsBtn.classList.add('clicked');
+        setTimeout(() => metricsBtn.classList.remove('clicked'), 300);
+        showMetrics();
+    });
     metricsClose.addEventListener('click', () => metricsModal.style.display = 'none');
     metricsModal.addEventListener('click', e => { if (e.target === metricsModal) metricsModal.style.display = 'none'; });
 }
