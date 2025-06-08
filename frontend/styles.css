@@ -276,6 +276,14 @@ header {
 
 .calendar-day.today {
     border: 2px solid var(--primary-color);
+    background-color: #e8f5e9; /* Светло-зеленый фон для сегодняшнего дня */
+    color: #2e7d32; /* Темно-зеленый текст */
+}
+
+.calendar-day.today.marked {
+    background-color: var(--success-color); /* При выполнении окрашиваем как остальные отмеченные дни */
+    color: white;
+    border-color: var(--success-color);
 }
 
 .calendar-day.marked {

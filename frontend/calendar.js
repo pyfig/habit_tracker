@@ -125,10 +125,7 @@ function renderCalendar() {
         dayElement.setAttribute('data-date', dateStr);
         // Отмечаем сегодняшний день
         if (dateStr === todayDate) {
-            dayElement.classList.add('enabled');
             dayElement.classList.add('today');
-            dayElement.style.backgroundColor = '#e8f5e9'; // Светло-зеленый
-            dayElement.style.color = '#2e7d32'; // Темно-зеленый
         }
         // Отмечаем дни с отметками
         if (hasMarkOnDate(date)) {
