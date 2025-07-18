@@ -41,11 +41,15 @@ async def test_complete_and_uncomplete_habit(authenticated_client_with_habit):
 
     completed = await ac.get("/api/habits/completed")
     assert habit_id in [h["id"] for h in completed.json()]
+    marks = await ac.get(f"/api/marks/habit/{habit_id}")
+    assert len(marks.json()) == 1
 
     r = await ac.post(f"/api/habits/{habit_id}/uncomplete")
     assert r.status_code == 204
     completed = await ac.get("/api/habits/completed")
     assert habit_id not in [h["id"] for h in completed.json()]
+    marks = await ac.get(f"/api/marks/habit/{habit_id}")
+    assert len(marks.json()) == 0
 
 @pytest.mark.asyncio
 async def test_delete_habit(authenticated_client_with_habit):
