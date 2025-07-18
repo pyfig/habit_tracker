@@ -69,7 +69,11 @@ async def get_completed_habits(current_user: User = Depends(get_current_user), d
     return (
         db.query(Habit)
           .join(Mark)
-          .filter(Habit.user_id == current_user.id, Mark.date == date.today())
+          .filter(
+              Habit.user_id == current_user.id,
+              Habit.completed.is_(True),
+              Mark.date == date.today(),
+          )
           .all()
     )
 
@@ -81,7 +85,8 @@ async def complete_habit(habit_id: UUID, current_user: User = Depends(get_curren
     existing_mark = db.query(Mark).filter(Mark.habit_id == habit_id, Mark.date == date.today()).first()
     if not existing_mark:
         db.add(Mark(habit_id=habit_id, date=date.today()))
-        db.commit()
+    habit.completed = True
+    db.commit()
     return None
 
 @router.post("/{habit_id}/uncomplete", status_code=status.HTTP_204_NO_CONTENT)
@@ -92,7 +97,8 @@ async def uncomplete_habit(habit_id: UUID, current_user: User = Depends(get_curr
     mark = db.query(Mark).filter(Mark.habit_id == habit_id, Mark.date == date.today()).first()
     if mark:
         db.delete(mark)
-        db.commit()
+    habit.completed = False
+    db.commit()
     return None
 
 @router.post("/{habit_id}/archive")

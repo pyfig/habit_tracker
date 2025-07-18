@@ -15,7 +15,7 @@ async def test_profile_metrics(authenticated_client_with_habit):
     assert metrics.status_code == 200
     assert body["total_habits"] == 1
     assert body["active_habits"] == 1
-    assert body["completed_habits"] == 1
+    assert body["completed_habits"] == 0
     assert body["archived_habits"] == 0
     assert body["marks_total"] == 1
     assert body["marks_today"] == 1

@@ -12,12 +12,10 @@ router = APIRouter(prefix="/profile", tags=["profile"])
 async def get_metrics(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     total_habits = db.query(Habit).filter(Habit.user_id == current_user.id).count()
     archived_habits = db.query(Habit).filter(Habit.user_id == current_user.id, Habit.archived.is_(True)).count()
-    completed_habits = (
-        db.query(Habit)
-          .join(Mark)
-          .filter(Habit.user_id == current_user.id, Mark.date == date.today())
-          .count()
-    )
+    completed_habits = db.query(Habit).filter(
+        Habit.user_id == current_user.id,
+        Habit.completed.is_(True)
+    ).count()
     active_habits = db.query(Habit).filter(Habit.user_id == current_user.id, Habit.archived.is_(False)).count()
     marks_total = db.query(Mark).join(Habit).filter(Habit.user_id == current_user.id).count()
     marks_today = db.query(Mark).join(Habit).filter(Habit.user_id == current_user.id, Mark.date == date.today()).count()
@@ -29,3 +27,4 @@ async def get_metrics(current_user: User = Depends(get_current_user), db: Sessio
         "marks_total": marks_total,
         "marks_today": marks_today,
     }
+
