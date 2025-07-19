@@ -40,7 +40,7 @@ class HabitCreate(HabitBase):
 
 class HabitUpdate(HabitBase):
     name: Optional[str] = None
-    archived: Optional[bool]
+    archived: Optional[bool] = None
 
 
 class HabitRead(HabitBase):

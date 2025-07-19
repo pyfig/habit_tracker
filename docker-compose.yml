@@ -7,8 +7,9 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    env_file: .env
     environment:
-      - DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/habit_tracker
+      - DATABASE_URL=${DATABASE_URL}
     networks: [habit-network]
     restart: always
 
@@ -25,10 +26,11 @@ services:
   # ──────────── Postgres ────────────
   db:
     image: postgres:13
+    env_file: .env
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=habit_tracker
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -44,13 +46,14 @@ services:
 
   # ──────────── pytest ────────────
   tests:
-    build: ./backend        
+    build: ./backend
     depends_on:
       db:
         condition: service_healthy
+    env_file: .env
     environment:
-      - DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/habit_tracker_test
-      - POSTGRES_PASSWORD=postgres
+      - DATABASE_URL=${DATABASE_URL_TEST}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     entrypoint: ["/app/tests/entrypoint.sh"]   
     networks: [habit-network]
     restart: "no"
