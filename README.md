@@ -58,7 +58,8 @@ Create, edit, archive, restore and track progress through a calendar.
 ```bash
 git clone https://github.com/your-org/habit_tracker.git
 cd habit_tracker
-./main.sh      
+cp .env.example .env
+./main.sh
 ````
 
 | Service  | URL                                            |
@@ -73,9 +74,17 @@ Front-end is a static SPA (HTML / CSS / vanilla JS) served by Nginx.
 ## Testing & Coverage
 ```bash
 # inside project root
-./tests.sh                        # report in results.txt  
+./tests.sh                        # report in results.txt
                                   # spins up Postgres -> runs backend tests -> shows coverage
 ```
+
+## Continuous Integration
+
+GitHub Actions run linting and tests for every push. Secrets like database
+credentials and Telegram tokens should be stored in **Settings → Secrets and variables**.
+Each job posts its result to Telegram using `appleboy/telegram-action`.
+
+To trigger the workflow manually via Telegram, run `/run_ci` in the bot chat.
 
 ## Project Structure
 

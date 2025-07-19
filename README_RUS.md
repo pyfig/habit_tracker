@@ -56,6 +56,7 @@
 ```bash
 git clone https://github.com/your-org/habit_tracker.git
 cd habit_tracker
+cp .env.example .env
 ./main.sh                 # собирает образы и поднимает весь стек
 ````
 
@@ -78,6 +79,16 @@ cd habit_tracker
 
 `tests.sh` собирает образ **tests**, запускает контейнер базы, выполняет `pytest --cov`,
 сохраняет текстовый отчёт в `results.txt`
+
+---
+
+## Непрерывная интеграция
+
+GitHub Actions выполняет линтинг и тесты при каждом пуше. Секреты (например,
+токен Telegram) хранятся в разделе **Settings → Secrets and variables**.
+Каждый джоб отправляет результат в Telegram через `appleboy/telegram-action`.
+
+Для ручного запуска CI отправьте боту команду `/run_ci`.
 
 ---
 
