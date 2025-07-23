@@ -22,6 +22,16 @@ services:
     networks: [habit-network]
     restart: always
 
+  # ──────────── telegram bot ────────────
+  telegram-bot:
+    build: ./telegram_bot
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+    depends_on:
+      - backend
+    networks: [habit-network]
+    restart: always
+
   # ──────────── Postgres ────────────
   db:
     image: postgres:13

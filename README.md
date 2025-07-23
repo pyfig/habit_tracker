@@ -63,8 +63,11 @@ cd habit_tracker
 
 | Service  | URL                                            |
 | -------- | ---------------------------------------------- |
-| Backend  | [http://localhost:8000](http://localhost:8000) |
-| Frontend | [http://localhost:3000](http://localhost:3000) |                     
+| Backend      | [http://localhost:8000](http://localhost:8000) |
+| Frontend     | [http://localhost:3000](http://localhost:3000) |
+| Telegram Bot | -- requires `BOT_TOKEN` env -- |
+
+Set `BOT_TOKEN` in your environment before running `./main.sh` to enable the bot.
 
 Front-end is a static SPA (HTML / CSS / vanilla JS) served by Nginx.
 
