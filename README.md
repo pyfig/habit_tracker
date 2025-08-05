@@ -29,6 +29,12 @@ Create, edit, archive, restore and track progress through a calendar.
 * **End-to-end testing** for all functionality
 * **SQLite** for testing with automatic setup
 
+### Telegram Notifications
+* **Startup/shutdown notifications** via Telegram bot
+* **Health check notifications** for system monitoring
+* **Error notifications** for system issues
+* **Easy setup** with interactive configuration script
+
 ---
 
 ## API
@@ -52,6 +58,8 @@ Create, edit, archive, restore and track progress through a calendar.
 | DELETE | `/api/marks/{mark_id}`                | Delete a mark                      | ✅   |
 | GET    | `/api/profile/metrics`                | Get user metrics                   | ✅   |
 | GET    | `/`                                   | Health-check "Welcome" message     | ❌   |
+| GET    | `/api/health`                         | Health check with notifications    | ❌   |
+| POST   | `/api/health/notify`                  | Manual health notification         | ❌   |
 
 > **✅** Authenticated endpoints require `Authorization: Bearer token;`
   where the token comes from `/api/auth/login`.
@@ -67,6 +75,11 @@ Create, edit, archive, restore and track progress through a calendar.
 ```bash
 git clone https://github.com/your-org/habit_tracker.git
 cd habit_tracker
+
+# Optional: Set up Telegram notifications
+./setup_telegram.sh
+
+# Start the application
 ./main.sh      
 ```
 
@@ -76,6 +89,39 @@ cd habit_tracker
 | Frontend | [http://localhost:3000](http://localhost:3000) |                     
 
 Front-end is a static SPA (HTML / CSS / vanilla JS) served by Nginx.
+
+---
+
+## Telegram Notifications
+
+The application includes optional Telegram bot notifications for system monitoring.
+
+### Setup
+```bash
+# Interactive setup (recommended)
+./setup_telegram.sh
+
+# Or manual setup
+export TELEGRAM_BOT_TOKEN=your_bot_token
+export TELEGRAM_CHAT_ID=your_chat_id
+```
+
+### Test Notifications
+```bash
+# Test the bot
+./test_telegram.sh
+
+# Manual health check notification
+curl -X POST http://localhost:8000/api/health/notify
+```
+
+### Notification Types
+- **Startup**: When services start successfully
+- **Shutdown**: When services are stopping
+- **Health Check**: System status monitoring
+- **Errors**: When issues occur
+
+For detailed setup instructions, see [TELEGRAM_BOT_README.md](TELEGRAM_BOT_README.md).
 
 ---
 
