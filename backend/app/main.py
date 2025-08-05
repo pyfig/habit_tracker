@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import auth, habits, marks, profile
+from app.routes import auth, habits, marks, profile, telegram
 from app.models import Base
 from app.db import engine
 
@@ -31,6 +31,7 @@ app.include_router(auth.router, prefix="/api")
 app.include_router(habits.router, prefix="/api")
 app.include_router(marks.router, prefix="/api")
 app.include_router(profile.router, prefix="/api")
+app.include_router(telegram.router, prefix="/api")
 
 
 @app.on_event("startup")

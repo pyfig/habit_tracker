@@ -23,6 +23,13 @@ Create, edit, archive, restore and track progress through a calendar.
 * **Delete mark**
 * **Visual progress indicators**
 
+### Telegram Notifications
+* **Daily reminders** for incomplete habits
+* **Streak notifications** with milestone celebrations
+* **Configurable reminder times**
+* **Manual reminder triggers**
+* **Auto-notifications** when completing habits
+
 ### Database & Testing
 * **PostgreSQL** database with SQLAlchemy ORM
 * **94.32% test coverage** with comprehensive test suite
@@ -51,6 +58,11 @@ Create, edit, archive, restore and track progress through a calendar.
 | GET    | `/api/marks/habit/{habit_id}/`        | All marks for a habit              | ✅   |
 | DELETE | `/api/marks/{mark_id}`                | Delete a mark                      | ✅   |
 | GET    | `/api/profile/metrics`                | Get user metrics                   | ✅   |
+| POST   | `/api/telegram/settings`              | Set Telegram Chat ID               | ✅   |
+| GET    | `/api/telegram/settings`              | Get Telegram settings              | ✅   |
+| DELETE | `/api/telegram/settings`              | Remove Telegram settings           | ✅   |
+| POST   | `/api/telegram/send-reminder`         | Send manual habit reminder         | ✅   |
+| GET    | `/api/telegram/bot-info`              | Check bot status                   | ❌   |
 | GET    | `/`                                   | Health-check "Welcome" message     | ❌   |
 
 > **✅** Authenticated endpoints require `Authorization: Bearer token;`
@@ -69,6 +81,18 @@ git clone https://github.com/your-org/habit_tracker.git
 cd habit_tracker
 ./main.sh      
 ```
+
+### Telegram Notifications (Optional)
+```bash
+# Setup Telegram bot (get token from @BotFather)
+export TELEGRAM_BOT_TOKEN=your_bot_token
+./main.sh --setup-telegram
+
+# Start with Telegram notifications
+./main.sh
+```
+
+📖 **Detailed setup guide**: [TELEGRAM_SETUP.md](TELEGRAM_SETUP.md)
 
 | Service  | URL                                            |
 | -------- | ---------------------------------------------- |

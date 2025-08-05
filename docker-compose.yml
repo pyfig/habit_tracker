@@ -9,6 +9,8 @@ services:
       - db
     environment:
       - DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/habit_tracker
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - DAILY_REMINDER_TIME=${DAILY_REMINDER_TIME:-09:00}
     networks: [habit-network]
     restart: always
 
@@ -57,9 +59,26 @@ services:
     volumes:
       - ./coverage:/app/htmlcov
 
+  # ──────────── Telegram Scheduler ────────────
+  telegram-scheduler:
+    build: ./backend
+    depends_on:
+      - db
+      - backend
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/habit_tracker
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - DAILY_REMINDER_TIME=${DAILY_REMINDER_TIME:-09:00}
+    command: python scheduler.py
+    networks: [habit-network]
+    restart: always
+    volumes:
+      - telegram_logs:/var/log
+
 networks:
   habit-network:
     driver: bridge
 
 volumes:
   postgres_data:
+  telegram_logs:
