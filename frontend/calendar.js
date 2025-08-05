@@ -1,18 +1,13 @@
-// Управление календарем отметок
-
-// Получение элементов
 const calendarElement = document.getElementById('calendar');
 const currentMonthElement = document.getElementById('current-month');
 const prevMonthBtn = document.getElementById('prev-month');
 const nextMonthBtn = document.getElementById('next-month');
 
-// Глобальные переменные
 let currentDate = new Date();
 let currentMonth = currentDate.getMonth();
 let currentYear = currentDate.getFullYear();
-let allMarks = {}; // Объект для хранения отметок по привычкам
+let allMarks = {};
 
-// Названия месяцев
 const monthNames = [
     'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
     'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
@@ -26,7 +21,6 @@ async function loadAllMarks() {
         allMarks = {};
         if (!habits || habits.length === 0) {
              console.warn("loadAllMarks: Массив habits пуст или не загружен.");
-
         }
 
         console.log("Загрузка отметок для привычек:", habits); 
@@ -49,18 +43,15 @@ async function loadAllMarks() {
     }
 }
 
-// Функция для получения дней в месяце
 function getDaysInMonth(year, month) {
     return new Date(year, month + 1, 0).getDate();
 }
 
-// Функция для получения первого дня месяца (0 - воскресенье, 1 - понедельник, ...)
 function getFirstDayOfMonth(year, month) {
     const day = new Date(year, month, 1).getDay();
-    return day === 0 ? 6 : day - 1; // Преобразуем для начала недели с понедельника
+    return day === 0 ? 6 : day - 1;
 }
 
-// Функция для форматирования даты в строку YYYY-MM-DD
 function formatDate(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -68,11 +59,9 @@ function formatDate(date) {
     return `${year}-${month}-${day}`;
 }
 
-// Функция для проверки, есть ли отметка на определенную дату
 function hasMarkOnDate(date) {
     const dateStr = formatDate(date);
     
-    // Проверяем все привычки
     for (const habitId in allMarks) {
         const habitMarks = allMarks[habitId];
         if (habitMarks.some(mark => mark.date === dateStr)) {
@@ -83,15 +72,11 @@ function hasMarkOnDate(date) {
     return false;
 }
 
-// Функция для отображения календаря
 function renderCalendar() {
-    // Обновляем заголовок с текущим месяцем и годом
     currentMonthElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
     
-    // Очищаем календарь
     calendarElement.innerHTML = '';
     
-    // Добавляем заголовки дней недели
     weekdayNames.forEach(day => {
         const dayElement = document.createElement('div');
         dayElement.className = 'calendar-header';
@@ -99,11 +84,9 @@ function renderCalendar() {
         calendarElement.appendChild(dayElement);
     });
     
-    // Получаем количество дней в текущем месяце и первый день месяца
     const daysInMonth = getDaysInMonth(currentYear, currentMonth);
     const firstDay = getFirstDayOfMonth(currentYear, currentMonth);
     
-    // Добавляем пустые ячейки для дней предыдущего месяца
     for (let i = 0; i < firstDay; i++) {
         const prevMonthDate = new Date(currentYear, currentMonth, 0 - (firstDay - i - 1));
         const dayElement = document.createElement('div');
@@ -112,7 +95,6 @@ function renderCalendar() {
         calendarElement.appendChild(dayElement);
     }
     
-    // Добавляем дни текущего месяца
     const today = new Date();
     const todayDate = formatDate(today);
     
@@ -123,11 +105,9 @@ function renderCalendar() {
         dayElement.className = 'calendar-day';
         dayElement.textContent = i;
         dayElement.setAttribute('data-date', dateStr);
-        // Отмечаем сегодняшний день
         if (dateStr === todayDate) {
             dayElement.classList.add('today');
         }
-        // Отмечаем дни с отметками
         if (hasMarkOnDate(date)) {
             dayElement.classList.add('marked');
         }
@@ -136,7 +116,6 @@ function renderCalendar() {
         calendarElement.appendChild(dayElement);
     }
     
-    // Добавляем пустые ячейки для дней следующего месяца
     const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
     const remainingCells = totalCells - (firstDay + daysInMonth);
     
@@ -149,7 +128,6 @@ function renderCalendar() {
     }
 }
 
-// Функция для отображения списка выполненных сегодня привычек
 function renderCompletedToday() {
     const todayStr = formatDate(new Date());
     const listEl = document.getElementById('completed-today-list');
@@ -165,7 +143,7 @@ function renderCompletedToday() {
     } else {
         doneHabits.forEach(habit => {
             const container = document.createElement('div');
-            container.classList.add('habit-item'); // use active habit styling
+            container.classList.add('habit-item');
             
             const title = document.createElement('span');
             title.classList.add('habit-title');
@@ -175,10 +153,10 @@ function renderCompletedToday() {
             const btn = document.createElement('button');
             btn.textContent = 'Вернуть';
             btn.classList.add('recover-btn');
-            btn.style.marginLeft = 'auto'; // push to right
+            btn.style.marginLeft = 'auto';
             btn.addEventListener('click', async () => {
                 const token = getToken();
-                // delete today's mark
+                await habitsApi.uncomplete(habit.id, token);
                 const mark = (allMarks[habit.id] || []).find(m => m.date === todayStr);
                 if (mark) {
                     await marksApi.delete(mark.id, token);
@@ -193,11 +171,8 @@ function renderCompletedToday() {
     }
 }
 
-  
-
-
 function toggleTodayMark() {
-    const today = formatDate(new Date()); // Сегодняшняя дата в формате строки
+    const today = formatDate(new Date());
     const todayElement = document.querySelector(`.calendar-day[data-date="${today}"]`);
 
     if (todayElement) {
@@ -225,8 +200,6 @@ function showDateHabits(dateStr) {
     modal.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
 }
 
-
-// Функция для переключения на предыдущий месяц
 function goToPrevMonth() {
     currentMonth--;
     if (currentMonth < 0) {
@@ -236,7 +209,6 @@ function goToPrevMonth() {
     renderCalendar();
 }
 
-// Функция для переключения на следующий месяц
 function goToNextMonth() {
     currentMonth++;
     if (currentMonth > 11) {
@@ -246,7 +218,6 @@ function goToNextMonth() {
     renderCalendar();
 }
 
-// Функция для добавления или удаления отметки
 async function toggleMark(dateStr) {
     if (habits.length !== 1) {
         return;
@@ -256,23 +227,17 @@ async function toggleMark(dateStr) {
     await processMarkToggle(selectedHabitId, dateStr);
 }
 
-
-
-// Функция для обработки добавления/удаления отметки
 async function processMarkToggle(habitId, dateStr) {
     try {
         const token = getToken();
         const habitMarks = allMarks[habitId] || [];
         
-        // Проверяем, есть ли уже отметка на эту дату
         const existingMark = habitMarks.find(mark => mark.date === dateStr);
         
         if (existingMark) {
-            // Удаляем отметку
             await marksApi.delete(existingMark.id, token);
             allMarks[habitId] = habitMarks.filter(mark => mark.id !== existingMark.id);
         } else {
-            // Добавляем отметку
             const newMark = await marksApi.create({
                 habit_id: habitId,
                 date: dateStr
@@ -291,14 +256,11 @@ async function processMarkToggle(habitId, dateStr) {
     }
 }
 
-// Обработчики событий для кнопок переключения месяцев
 prevMonthBtn.addEventListener('click', goToPrevMonth);
 nextMonthBtn.addEventListener('click', goToNextMonth);
 
-// Функция для обновления календаря
 function updateCalendar() {
     loadAllMarks();
 }
 
-// Инициализация календаря при загрузке страницы
 renderCalendar();
