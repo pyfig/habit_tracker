@@ -1,4 +1,3 @@
-// Управление привычками на фронтенде
 const habitsList = document.getElementById('habits-list');
 const addHabitBtn = document.getElementById('add-habit-btn');
 const habitForm = document.getElementById('habit-form');
@@ -22,12 +21,10 @@ let habits = [];
 let archiveTargetId = null;
 let deleteTargetId = null;
 
-// Утилиты для работы с модалками
 function showModal(modal) { modal.style.display = 'block'; }
 function hideModal(modal) { modal.style.display = 'none'; }
 function formatDate(date) { return date.toISOString().slice(0,10); }
 
-// Открытие/закрытие Habit-модалки
 function openHabitModal(editingId = null) {
   habitForm.reset();
   delete habitForm.dataset.editing;
@@ -37,7 +34,6 @@ function openHabitModal(editingId = null) {
 }
 function closeHabitModal() { hideModal(habitModal); }
 
-// Confirm-модалка архивирования
 function showConfirmArchive(id) {
   archiveTargetId = id;
   showModal(confirmArchiveModal);
@@ -53,12 +49,10 @@ confirmArchiveBtn.addEventListener('click', async () => {
 cancelArchiveBtn.addEventListener('click', () => { hideModal(confirmArchiveModal); archiveTargetId = null; });
 confirmArchiveModal.addEventListener('click', e => { if (e.target===confirmArchiveModal) hideModal(confirmArchiveModal); });
 
-// Открытие/закрытие Archive-модалки
 archiveBtn.addEventListener('click', async () => { showModal(archiveModal); await loadArchivedHabits(getToken()); });
 closeArchiveBtn.addEventListener('click', () => hideModal(archiveModal));
 archiveModal.addEventListener('click', e => { if (e.target===archiveModal) hideModal(archiveModal); });
 
-// Загрузка привычек и архива
 async function loadHabits() {
   try {
     const token = getToken();
@@ -75,7 +69,6 @@ async function loadArchivedHabits(token) {
   } catch (e) { console.error(e); }
 }
 
-// Рендер активных привычек
 function renderHabits() {
   habitsList.innerHTML='';
   const today=formatDate(new Date());
@@ -102,20 +95,15 @@ function renderHabits() {
   });
 }
 
-// Рендер архива
 function renderArchivedHabits(list) {
   archivedList.innerHTML=list.map(h=>`<li class="archived-item"><span>${h.name}</span>
     <button class="btn recover-btn" data-id="${h.id}">Восстановить</button></li>`).join('');
   archivedList.querySelectorAll('.recover-btn').forEach(b=>b.addEventListener('click',()=>recoverHabit(b.dataset.id)));
 }
 
-// Восстановление
 async function recoverHabit(id) {
   try{ await habitsApi.restore(id,getToken()); await loadHabits(); hideModal(archiveModal);} catch(e){console.error(e);} }
 
-
-
-// Удаление привычки
 async function deleteHabit(habitId) {
   if (!confirm('Удалить эту привычку?')) return;
   try {
@@ -125,16 +113,37 @@ async function deleteHabit(habitId) {
   } catch(e) {console.error(e);} 
 }
 
-// Завершение привычки
 async function completeHabit(habitId) {
   try {
+    const token = getToken();
+    
+    await habitsApi.complete(habitId, token);
+    
     const today = formatDate(new Date());
-    await marksApi.create({ habit_id: habitId, date: today }, getToken());
-    await loadAllMarks(); renderHabits(); renderCompletedToday();
+    await marksApi.create({ habit_id: habitId, date: today }, token);
+    
+    await loadAllMarks(); 
+    renderHabits(); 
+    renderCompletedToday();
+  } catch (e) { 
+    console.error('Error in completeHabit:', e); 
+  }
+}
+
+async function uncompleteHabit(habitId) {
+  try {
+    await habitsApi.uncomplete(habitId, getToken());
+    const today = formatDate(new Date());
+    const mark = (allMarks[habitId] || []).find(m => m.date === today);
+    if (mark) {
+      await marksApi.delete(mark.id, getToken());
+    }
+    await loadAllMarks(); 
+    renderHabits(); 
+    renderCompletedToday();
   } catch (e) { console.error(e); }
 }
 
-// Добавление новой привычки
 async function addHabit() {
   const name = document.getElementById('habit-name').value.trim();
   const description = document.getElementById('habit-description').value.trim();
@@ -153,7 +162,6 @@ async function addHabit() {
   }
 }
 
-// Обновление привычки
 async function updateHabit(habitId) {
   const name = document.getElementById('habit-name').value.trim();
   const description = document.getElementById('habit-description').value.trim();
@@ -173,7 +181,6 @@ async function updateHabit(habitId) {
   }
 }
 
-// Обработчики формы добавления/редактирования
 habitForm.addEventListener('submit', event => {
   event.preventDefault();
   const editingId = habitForm.dataset.editing;
@@ -189,9 +196,8 @@ function createHabitElement(habit) {
         const restoreButton = document.createElement("button");
         restoreButton.textContent = "Вернуть";
         restoreButton.onclick = async () => {
-            // ("/{habit_id}/restore",
             await fetch(`/${habit.id/restore}`, { method: "POST" });
-            loadHabits(); // перезагрузка списка
+            loadHabits();
         };
         habitElement.appendChild(restoreButton);
     }
@@ -221,7 +227,6 @@ function showConfirmDelete(id) {
     if (e.target === confirmDeleteModal) hideModal(confirmDeleteModal);
   });
 
-// Кнопки открытия/закрытия Habit-модалки
 addHabitBtn.addEventListener('click', () => openHabitModal());
 modalCloseBtn.addEventListener('click', closeHabitModal);
 cancelHabitBtn.addEventListener('click', closeHabitModal);
