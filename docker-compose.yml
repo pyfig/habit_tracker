@@ -9,6 +9,8 @@ services:
       - db
     environment:
       - DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/habit_tracker
+      - TELEGRAM_BOT_TOKEN=${BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${CHAT_ID}
     networks: [habit-network]
     restart: always
 
@@ -51,6 +53,8 @@ services:
     environment:
       - DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/habit_tracker_test
       - POSTGRES_PASSWORD=postgres
+      - TELEGRAM_BOT_TOKEN=${BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${CHAT_ID}
     entrypoint: ["/app/tests/entrypoint.sh"]   
     networks: [habit-network]
     restart: "no"
