@@ -57,6 +57,25 @@ services:
     volumes:
       - ./coverage:/app/htmlcov
 
+  # ──────────── Telegram Bot ────────────
+  telegram-bot:
+    build: 
+      context: ./backend
+      dockerfile: telegram_bot/Dockerfile
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID:-}
+    networks: [habit-network]
+    restart: always
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0 if 'telegram_bot' in sys.modules else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
 networks:
   habit-network:
     driver: bridge
