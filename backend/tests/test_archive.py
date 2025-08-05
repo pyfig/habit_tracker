@@ -12,7 +12,7 @@ async def test_archive_and_restore_habit(authenticated_client):
 
     resp = await authenticated_client.post(f"/api/habits/{habit_id}/archive")
     assert resp.status_code == 200
-    assert resp.json()["archived"] is True  # 
+    assert resp.json()["archived"] is True
 
     active = await authenticated_client.get("/api/habits/")
     assert habit_id not in [h["id"] for h in active.json()]

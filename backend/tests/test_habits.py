@@ -17,11 +17,9 @@ async def test_get_habits(authenticated_client):
 
 @pytest.mark.asyncio
 async def test_update_habit(authenticated_client):
-    # создаём
     r = await authenticated_client.post("/api/habits/", json={"name":"Upd","description":""})
     habit_id = r.json()["id"]
 
-    # апдейт
     r = await authenticated_client.put(f"/api/habits/{habit_id}", json={"name":"New","description":"Desc"})
     assert r.status_code == 200
     body = r.json()

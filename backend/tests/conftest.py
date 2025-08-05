@@ -1,7 +1,27 @@
 import pytest_asyncio
+import os
+import sys
 from httpx import AsyncClient
-from app.main import app
 import uuid
+
+os.environ["DATABASE_URL"] = "sqlite:///./test.db"
+
+from app.main import app
+from app.db import engine, Base
+from app.models import User, Habit, Mark
+
+def create_test_tables():
+    Base.metadata.create_all(bind=engine)
+
+@pytest_asyncio.fixture(scope="session", autouse=True)
+async def setup_test_db():
+    create_test_tables()
+    yield
+    Base.metadata.drop_all(bind=engine)
+
+@pytest_asyncio.fixture(autouse=True)
+async def ensure_tables():
+    create_test_tables()
 
 @pytest_asyncio.fixture
 async def authenticated_client():
