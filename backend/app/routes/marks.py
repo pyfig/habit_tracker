@@ -7,6 +7,7 @@ from app.db import get_db
 from app.models import Mark, Habit, User
 from app.schemas import MarkCreate, MarkRead
 from app.auth import get_current_user
+from app.telegram_service import telegram_bot, calculate_streak
 
 router = APIRouter(prefix="/marks", tags=["marks"])
 
@@ -27,6 +28,21 @@ async def create_mark(mark_data: MarkCreate, current_user: User = Depends(get_cu
     db.add(new_mark)
     db.commit()
     db.refresh(new_mark)
+    
+    # Send Telegram notification if user has it configured
+    if current_user.telegram_chat_id:
+        try:
+            streak_count = calculate_streak(mark_data.habit_id, db)
+            telegram_bot.send_streak_notification(
+                current_user.telegram_chat_id,
+                habit.name,
+                streak_count
+            )
+        except Exception as e:
+            # Don't fail the mark creation if Telegram notification fails
+            import logging
+            logging.warning(f"Failed to send Telegram notification: {str(e)}")
+    
     return new_mark
 
 @router.get("/habit/{habit_id}", response_model=List[MarkRead])

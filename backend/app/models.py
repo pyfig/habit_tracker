@@ -8,6 +8,7 @@ class User(Base):
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     username = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
+    telegram_chat_id = Column(String, nullable=True)
     habits = relationship("Habit", back_populates="user", cascade="all, delete-orphan")
 
 class Habit(Base):
