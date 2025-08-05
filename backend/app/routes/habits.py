@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from uuid import UUID
 
 from app.db import get_db
 from app.models import Habit, User
@@ -36,7 +35,7 @@ async def get_habits(current_user: User = Depends(get_current_user), db: Session
     )
 
 @router.put("/{habit_id}", response_model=HabitRead)
-async def update_habit(habit_id: UUID, habit_data: HabitUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+async def update_habit(habit_id: str, habit_data: HabitUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     habit = db.query(Habit).filter(Habit.id == habit_id, Habit.user_id == current_user.id).first()
     if not habit:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
@@ -47,7 +46,7 @@ async def update_habit(habit_id: UUID, habit_data: HabitUpdate, current_user: Us
     return habit
 
 @router.delete("/{habit_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_habit(habit_id: UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+async def delete_habit(habit_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     habit = db.query(Habit).filter(Habit.id == habit_id, Habit.user_id == current_user.id).first()
     if not habit:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
@@ -72,7 +71,7 @@ async def get_completed_habits(current_user: User = Depends(get_current_user), d
     )
 
 @router.post("/{habit_id}/complete", status_code=status.HTTP_204_NO_CONTENT)
-async def complete_habit(habit_id: UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+async def complete_habit(habit_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     habit = db.query(Habit).filter(Habit.id == habit_id, Habit.user_id == current_user.id).first()
     if not habit:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
@@ -81,7 +80,7 @@ async def complete_habit(habit_id: UUID, current_user: User = Depends(get_curren
     return None
 
 @router.post("/{habit_id}/uncomplete", status_code=status.HTTP_204_NO_CONTENT)
-async def uncomplete_habit(habit_id: UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+async def uncomplete_habit(habit_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     habit = db.query(Habit).filter(Habit.id == habit_id, Habit.user_id == current_user.id).first()
     if not habit:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
@@ -90,7 +89,7 @@ async def uncomplete_habit(habit_id: UUID, current_user: User = Depends(get_curr
     return None
 
 @router.post("/{habit_id}/archive")
-async def archive_habit(habit_id: UUID, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+async def archive_habit(habit_id: str, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
     habit = db.query(Habit).filter(Habit.id == habit_id, Habit.user_id == current_user.id).first()
     if not habit:
         raise HTTPException(status_code=404, detail="Привычка не найдена")
@@ -100,7 +99,7 @@ async def archive_habit(habit_id: UUID, db: Session = Depends(get_db), current_u
     return habit
 
 @router.post("/{habit_id}/restore", response_model=HabitRead)
-async def restore_habit(habit_id: UUID, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+async def restore_habit(habit_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     habit = db.query(Habit).filter(Habit.id == habit_id, Habit.user_id == current_user.id).first()
     if not habit:
         raise HTTPException(status_code=404, detail="Не найдена привычка")

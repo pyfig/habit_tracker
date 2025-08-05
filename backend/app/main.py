@@ -4,9 +4,6 @@ from app.routes import auth, habits, marks, profile
 from app.models import Base
 from app.db import engine
 
-# Создаем таблицы в базе данных
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI(title="Habit Tracker API")
 
 # Настройка CORS
@@ -34,6 +31,12 @@ app.include_router(auth.router, prefix="/api")
 app.include_router(habits.router, prefix="/api")
 app.include_router(marks.router, prefix="/api")
 app.include_router(profile.router, prefix="/api")
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Create database tables on startup"""
+    Base.metadata.create_all(bind=engine)
 
 
 @app.get("/")

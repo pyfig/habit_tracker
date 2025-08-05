@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field, validator
-from uuid import UUID
 from typing import Optional, List
 from datetime import date
 import re
@@ -21,7 +20,7 @@ class UserCreate(BaseModel):
         return v
 
 class UserRead(BaseModel):
-    id: UUID
+    id: str
     username: str
 
     class Config:
@@ -44,20 +43,20 @@ class HabitUpdate(HabitBase):
 
 
 class HabitRead(HabitBase):
-    id: UUID
-    user_id: UUID
+    id: str
+    user_id: str
     completed: bool
 
     class Config:
         orm_mode = True
 
 class MarkCreate(BaseModel):
-    habit_id: UUID
+    habit_id: str
     date: date
 
 class MarkRead(BaseModel):
-    id: UUID
-    habit_id: UUID
+    id: str
+    habit_id: str
     date: date
 
     class Config:
